@@ -11,28 +11,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, dynamic>> _slides = [
-    {
-      "icon": Icons.work_outline_rounded,
-      "title": "Find Jobs Across
-The Caribbean",
-      "subtitle": "Browse hundreds of full-time, part-time and contract jobs from SVG to Jamaica and beyond.",
-      "color": const Color(0xFF5B8DB8),
-    },
-    {
-      "icon": Icons.handyman_outlined,
-      "title": "Post & Find
-Freelance Gigs",
-      "subtitle": "Hire skilled tradespeople, designers, tutors and more — or offer your own services.",
-      "color": const Color(0xFFD4A843),
-    },
-    {
-      "icon": Icons.people_outline_rounded,
-      "title": "Connect With
-Local Employers",
-      "subtitle": "Message employers directly, track your applications and grow your Caribbean career.",
-      "color": const Color(0xFF55A375),
-    },
+  final List<_Slide> _slides = [
+    _Slide(icon: Icons.work_outline_rounded, title: "Find Jobs Across
+The Caribbean", subtitle: "Browse hundreds of full-time, part-time and contract jobs from SVG to Jamaica and beyond.", color: Color(0xFF5B8DB8)),
+    _Slide(icon: Icons.handyman_outlined, title: "Post and Find
+Freelance Gigs", subtitle: "Hire skilled tradespeople, designers, tutors and more or offer your own services.", color: Color(0xFFD4A843)),
+    _Slide(icon: Icons.people_outline_rounded, title: "Connect With
+Local Employers", subtitle: "Message employers directly, track your applications and grow your Caribbean career.", color: Color(0xFF55A375)),
   ];
 
   void _nextPage() {
@@ -73,23 +58,15 @@ Local Employers",
                           width: 140,
                           height: 140,
                           decoration: BoxDecoration(
-                            color: (slide["color"] as Color).withOpacity(0.12),
+                            color: slide.color.withOpacity(0.12),
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(slide["icon"] as IconData, size: 72, color: slide["color"] as Color),
+                          child: Icon(slide.icon, size: 72, color: slide.color),
                         ),
                         const SizedBox(height: 48),
-                        Text(
-                          slide["title"] as String,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2D3436), height: 1.3),
-                        ),
+                        Text(slide.title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2D3436), height: 1.3)),
                         const SizedBox(height: 20),
-                        Text(
-                          slide["subtitle"] as String,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 16, color: Color(0xFF636E72), height: 1.6),
-                        ),
+                        Text(slide.subtitle, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, color: Color(0xFF636E72), height: 1.6)),
                       ],
                     ),
                   );
@@ -123,10 +100,7 @@ Local Employers",
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: Text(
-                    _currentPage == 2 ? "Get Started" : "Next",
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text(_currentPage == 2 ? "Get Started" : "Next", style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -136,4 +110,12 @@ Local Employers",
       ),
     );
   }
+}
+
+class _Slide {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  const _Slide({required this.icon, required this.title, required this.subtitle, required this.color});
 }
