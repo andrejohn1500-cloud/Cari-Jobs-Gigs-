@@ -31,7 +31,7 @@ class _AccountTypeScreenState extends State<AccountTypeScreen> {
             children: [
               const Text('I am a...', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
               const SizedBox(height: 8),
-              const Text('Choose how you want to use Cari-Jobs&Gigs. You can always change this later.', style: TextStyle(fontSize: 15, color: Color(0xFF636E72), height: 1.5)),
+              const Text('Choose how you want to use CariWorks. You can always change this later.', style: TextStyle(fontSize: 15, color: Color(0xFF636E72), height: 1.5)),
               const SizedBox(height: 32),
               _buildTypeCard(type: 'seeker', icon: Icons.person_search_outlined, title: 'Job Seeker', subtitle: 'I am looking for jobs, gigs or freelance opportunities in the Caribbean.', color: const Color(0xFF5B8DB8)),
               const SizedBox(height: 14),
