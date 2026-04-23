@@ -3,6 +3,7 @@ import 'splash_screen.dart';
 import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
+import 'account_type_screen.dart';
 
 void main() {
   runApp(const CariJobsApp());
@@ -33,7 +34,7 @@ class CariJobsApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
-        '/account-type': (context) => const PlaceholderScreen(title: 'Account Type'),
+        '/account-type': (context) => const AccountTypeScreen(),
         '/home': (context) => const PlaceholderScreen(title: 'Home'),
       },
     );
