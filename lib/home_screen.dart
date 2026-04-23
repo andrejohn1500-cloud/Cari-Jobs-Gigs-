@@ -64,7 +64,7 @@ class HomeFeedTab extends StatelessWidget {
                   child: const Center(child: Text('CJ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13))),
                 ),
                 const SizedBox(width: 10),
-                const Text('Cari-Jobs&Gigs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
+                const Text('CariHub', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
               ],
             ),
             actions: [
