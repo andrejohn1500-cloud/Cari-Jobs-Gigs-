@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'splash_screen.dart';
 import 'onboarding_screen.dart';
 import 'login_screen.dart';
+import 'register_screen.dart';
 
 void main() {
   runApp(const CariJobsApp());
@@ -31,7 +32,8 @@ class CariJobsApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
-        '/register': (context) => const PlaceholderScreen(title: 'Register'),
+        '/register': (context) => const RegisterScreen(),
+        '/account-type': (context) => const PlaceholderScreen(title: 'Account Type'),
         '/home': (context) => const PlaceholderScreen(title: 'Home'),
       },
     );
