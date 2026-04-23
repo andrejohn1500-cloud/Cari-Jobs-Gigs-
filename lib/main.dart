@@ -4,6 +4,7 @@ import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
 import 'account_type_screen.dart';
+import 'home_screen.dart';
 
 void main() {
   runApp(const CariJobsApp());
@@ -35,23 +36,8 @@ class CariJobsApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/account-type': (context) => const AccountTypeScreen(),
-        '/home': (context) => const PlaceholderScreen(title: 'Home'),
+        '/home': (context) => const HomeScreen(),
       },
-    );
-  }
-}
-
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const PlaceholderScreen({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF8F5),
-      body: Center(
-        child: Text(title, style: const TextStyle(fontSize: 24, color: Color(0xFF5B8DB8), fontWeight: FontWeight.bold)),
-      ),
     );
   }
 }
