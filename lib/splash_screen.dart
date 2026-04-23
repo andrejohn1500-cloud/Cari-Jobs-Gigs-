@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 const SizedBox(height: 28),
                 const Text(
-                  "CariHub",
+                  "CariWorks",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.2),
                 ),
                 const SizedBox(height: 10),
