@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -224,7 +226,7 @@ class _HelpScreenState extends State<HelpScreen> {
     );
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_emailController.text.isEmpty || _detailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields'), backgroundColor: Colors.red),
@@ -232,8 +234,33 @@ class _HelpScreenState extends State<HelpScreen> {
       return;
     }
     setState(() => _loading = true);
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() { _loading = false; _submitted = true; });
-    });
+    try {
+      final response = await http.post(
+        Uri.parse('https://api.resend.com/emails'),
+        headers: {
+          'Authorization': 'Bearer re_NJBV6fu3_Lp7rfv8v8pWvcr5N7pW623r1',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'from': 'onboarding@resend.dev',
+          'to': 'andrejohn1500@gmail.com',
+          'subject': '[CariWorks Support] \${_selected!['title']}',
+          'html': '<h2>CariWorks Support Request</h2><p><b>Topic:</b> \${_selected!['title']}</p><p><b>From:</b> \${_emailController.text}</p><p><b>Message:</b></p><p>\${_detailController.text}</p>',
+        }),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() { _loading = false; _submitted = true; });
+      } else {
+        setState(() => _loading = false);
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to send. Please try again.'), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      setState(() => _loading = false);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Network error. Please try again.'), backgroundColor: Colors.red),
+      );
+    }
   }
 }
