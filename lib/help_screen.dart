@@ -234,6 +234,11 @@ class _HelpScreenState extends State<HelpScreen> {
       return;
     }
     setState(() => _loading = true);
+    final topic = _selected!['title'] as String;
+    final userEmail = _emailController.text;
+    final message = _detailController.text;
+    final subject = '[CariWorks Support] $topic';
+    final html = '<h2>CariWorks Support Request</h2><p><b>Topic:</b> $topic</p><p><b>From:</b> $userEmail</p><p><b>Message:</b></p><p>$message</p>';
     try {
       final response = await http.post(
         Uri.parse('https://api.resend.com/emails'),
@@ -244,8 +249,8 @@ class _HelpScreenState extends State<HelpScreen> {
         body: jsonEncode({
           'from': 'onboarding@resend.dev',
           'to': 'andrejohn1500@gmail.com',
-          'subject': '[CariWorks Support] \${_selected!['title']}',
-          'html': '<h2>CariWorks Support Request</h2><p><b>Topic:</b> \${_selected!['title']}</p><p><b>From:</b> \${_emailController.text}</p><p><b>Message:</b></p><p>\${_detailController.text}</p>',
+          'subject': subject,
+          'html': html,
         }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
