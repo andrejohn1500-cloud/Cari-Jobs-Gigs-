@@ -1,3 +1,5 @@
+import 'post_screen.dart';
+import 'profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'search_screen.dart';
 
@@ -307,7 +309,7 @@ class PostTab extends StatelessWidget {
   const PostTab({super.key});
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(child: Center(child: Text('Post a Job or Gig Coming Soon', style: TextStyle(color: Color(0xFF636E72), fontSize: 16))));
+    return const PostScreen();
   }
 }
 
@@ -323,6 +325,6 @@ class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(child: Center(child: Text('Profile Coming Soon', style: TextStyle(color: Color(0xFF636E72), fontSize: 16))));
+    return const ProfileScreen();
   }
 }
