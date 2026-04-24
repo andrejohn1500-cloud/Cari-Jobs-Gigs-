@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TextButton(
             onPressed: () async {
               if (ctrl.text.isNotEmpty) {
-                await Supabase.instance.client.auth.resetPasswordForEmail(ctrl.text.trim());
+                await Supabase.instance.client.auth.resetPasswordForEmail(ctrl.text.trim(), redirectTo: 'com.dresapps.cariworks://login-callback');
                 if (mounted) Navigator.pop(context);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

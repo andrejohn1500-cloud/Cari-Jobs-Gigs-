@@ -40,6 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         password: password,
         data: {'full_name': name},
+        emailRedirectTo: 'com.dresapps.cariworks://login-callback',
       );
       if (res.user != null) {
         await Supabase.instance.client.from('profiles').insert({

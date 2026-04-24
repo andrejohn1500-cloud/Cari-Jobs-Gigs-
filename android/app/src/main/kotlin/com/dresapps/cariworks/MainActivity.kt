@@ -1,4 +1,4 @@
-package com.dresapps.carijobsandgigs
+package com.dresapps.cariworks
 
 import io.flutter.embedding.android.FlutterActivity
 
