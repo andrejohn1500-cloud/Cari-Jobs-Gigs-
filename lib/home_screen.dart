@@ -1,3 +1,4 @@
+import 'messages_screen.dart';
 import 'post_screen.dart';
 import 'profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -317,7 +318,7 @@ class MessagesTab extends StatelessWidget {
   const MessagesTab({super.key});
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(child: Center(child: Text('Messages Coming Soon', style: TextStyle(color: Color(0xFF636E72), fontSize: 16))));
+    return const MessagesScreen();
   }
 }
 
