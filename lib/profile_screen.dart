@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'help_screen.dart';
 
@@ -11,6 +13,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? _profile;
   bool _loading = true;
+  String? _avatarUrl;
+  final _picker = ImagePicker();
 
   @override
   void initState() {
@@ -27,10 +31,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .select()
             .eq('id', user.id)
             .maybeSingle();
-        if (mounted) setState(() { _profile = data; _loading = false; });
+        if (mounted) setState(() { _profile = data; _avatarUrl = data?['avatar_url']; _loading = false; });
       }
     } catch (e) {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+
+  Future<void> _uploadAvatar() async {
+    final img = await _picker.pickImage(source: ImageSource.gallery, maxWidth: 512);
+    if (img == null) return;
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+    final bytes = await img.readAsBytes();
+    final path = '${user.id}/avatar.jpg';
+    try {
+      await Supabase.instance.client.storage.from('avatars').uploadBinary(
+        path, bytes,
+        fileOptions: const FileOptions(contentType: 'image/jpeg', upsert: true),
+      );
+      final url = Supabase.instance.client.storage.from('avatars').getPublicUrl(path);
+      await Supabase.instance.client.from('profiles').update({'avatar_url': url}).eq('id', user.id);
+      if (mounted) setState(() => _avatarUrl = url);
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload failed: $e')));
     }
   }
 
@@ -97,11 +122,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Stack(
                           children: [
-                            CircleAvatar(radius: 48, backgroundColor: Colors.white, child: Text(_initials, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF5B8DB8)))),
+                            CircleAvatar(
+                      radius: 48,
+                      backgroundColor: Colors.white,
+                      backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
+                      child: _avatarUrl == null ? Text(_initials, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF5B8DB8))) : null,
+                    ),
                             Positioned(bottom: 0, right: 0, child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                              child: const Icon(Icons.camera_alt, size: 16, color: Color(0xFF5B8DB8)),
+                              child: GestureDetector(onTap: _uploadAvatar, child: const Icon(Icons.camera_alt, size: 16, color: Color(0xFF5B8DB8))),
                             )),
                           ],
                         ),
