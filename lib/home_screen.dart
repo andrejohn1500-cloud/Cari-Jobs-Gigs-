@@ -237,7 +237,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
 class SearchTab extends StatelessWidget {
   const SearchTab({super.key});
   @override
-  Widget build(BuildContext context) => const SearchScreen();
+  Widget build(BuildContext context) => SearchScreen();
 }
 
 class PostTab extends StatelessWidget {
