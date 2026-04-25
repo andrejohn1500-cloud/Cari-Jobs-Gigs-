@@ -180,12 +180,12 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
 
   Widget _buildCategories() {
     final cats = [
-      {'icon': Symbols.handyman, 'label': 'Trades', 'color': const Color(0xFFD4A843)},
-      {'icon': Icons.code_rounded, 'label': 'Tech', 'color': const Color(0xFF5B8DB8)},
-      {'icon': Symbols.brush, 'label': 'Creative', 'color': const Color(0xFFD66A5E)},
-      {'icon': Symbols.school, 'label': 'Education', 'color': const Color(0xFF55A375)},
-      {'icon': Symbols.campaign, 'label': 'Marketing', 'color': const Color(0xFF9B59B6)},
-      {'icon': Symbols.restaurant, 'label': 'Food', 'color': const Color(0xFFE67E22)},
+      {'image': 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=120&q=80', 'label': 'Trades'},
+      {'image': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=120&q=80', 'label': 'Tech'},
+      {'image': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=120&q=80', 'label': 'Creative'},
+      {'image': 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=120&q=80', 'label': 'Education'},
+      {'image': 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=120&q=80', 'label': 'Marketing'},
+      {'image': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&q=80', 'label': 'Food'},
     ];
     return SizedBox(
       height: 90,
@@ -197,7 +197,18 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
           return Container(
             margin: const EdgeInsets.only(right: 12),
             child: Column(children: [
-              Container(width: 56, height: 56, decoration: BoxDecoration(color: (cat['color'] as Color).withOpacity(0.12), borderRadius: BorderRadius.circular(16)), child: Icon(cat['icon'] as IconData, color: cat['color'] as Color, size: 26)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  cat['image'] as String,
+                  width: 56, height: 56, fit: BoxFit.cover,
+                  errorBuilder: (c, e, s) => Container(
+                    width: 56, height: 56,
+                    decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withOpacity(0.12), borderRadius: BorderRadius.circular(16)),
+                    child: const Icon(Icons.image, color: Color(0xFF5B8DB8), size: 26),
+                  ),
+                ),
+              ),
               const SizedBox(height: 6),
               Text(cat['label'] as String, style: const TextStyle(fontSize: 12, color: Color(0xFF636E72), fontWeight: FontWeight.w500)),
             ]),
