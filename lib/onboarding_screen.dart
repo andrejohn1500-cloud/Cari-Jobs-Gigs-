@@ -25,6 +25,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    for (final slide in _slides) {
+      precacheImage(NetworkImage(slide.image), context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF8F5),
