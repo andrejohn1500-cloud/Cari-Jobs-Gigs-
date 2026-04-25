@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final res = await Supabase.instance.client.auth.signUp(
         email: email,
         password: password,
-        data: {'full_name': name, 'country': _selectedCountry ?? ''}
+        data: {'full_name': name, 'country': _selectedCountry ?? ''},
         emailRedirectTo: 'com.dresapps.cariworks://login-callback',
       );
       if (res.user != null) {
