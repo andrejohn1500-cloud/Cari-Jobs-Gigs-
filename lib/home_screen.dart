@@ -128,7 +128,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
                     _buildSectionHeader('Featured Services'),
                     const SizedBox(height: 14),
                     if (_loading) const SizedBox()
-                    else if (_gigs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No gigs posted yet.', style: TextStyle(color: Colors.grey))))
+                    else if (_gigs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No services posted yet.', style: TextStyle(color: Colors.grey))))
                     else ..._gigs.map((g) => Padding(padding: const EdgeInsets.only(bottom: 12), child: _buildGigCard(g))),
                     const SizedBox(height: 32),
                   ],

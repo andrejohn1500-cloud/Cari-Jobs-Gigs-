@@ -11,9 +11,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   final List<_Slide> _slides = const [
-    _Slide(icon: Icons.work_outline_rounded, title: 'Find Jobs Across The Caribbean', subtitle: 'Browse full-time, part-time and contract jobs from SVG to Jamaica and beyond.', color: Color(0xFF5B8DB8)),
-    _Slide(icon: Icons.handyman_outlined, title: 'Post and Find Freelance Gigs', subtitle: 'Hire skilled tradespeople, designers, tutors and more or offer your own services.', color: Color(0xFFD4A843)),
-    _Slide(icon: Icons.people_outline_rounded, title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.', color: Color(0xFF55A375)),
+    _Slide(image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80', title: 'Find Jobs Across The Caribbean', subtitle: 'Browse full-time, part-time and contract jobs from SVG to Jamaica and beyond.'),
+    _Slide(image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', title: 'Post & Find Services', subtitle: 'Hire skilled tradespeople, designers, tutors and more or offer your own services.'),
+    _Slide(image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80', title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.'),
   ];
 
   void _nextPage() {
@@ -99,9 +99,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class _Slide {
-  final IconData icon;
+  final String image;
   final String title;
   final String subtitle;
-  final Color color;
-  const _Slide({required this.icon, required this.title, required this.subtitle, required this.color});
+  const _Slide({required this.image, required this.title, required this.subtitle});
 }
