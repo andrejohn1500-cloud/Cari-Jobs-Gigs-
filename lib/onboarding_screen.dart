@@ -50,10 +50,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 140, height: 140,
-                          
-                          
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  slide.image,
+                  width: double.infinity,
+                  height: 260,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, e, st) => Container(
+                    height: 260, color: Color(0xFFE8F0FE),
+                    child: Icon(Icons.image_not_supported, size: 60, color: Color(0xFF5B8DB8))),
+                ),
+              ),
                         ),
                         const SizedBox(height: 48),
                         Text(slide.title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2D3436), height: 1.3)),
