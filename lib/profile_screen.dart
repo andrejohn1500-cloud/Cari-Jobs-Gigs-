@@ -39,6 +39,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
+
+  Future<void> _showEditProfile() async {
+    final nameCtrl = TextEditingController(text: _profile?['full_name'] ?? '');
+    final bioCtrl = TextEditingController(text: _profile?['bio'] ?? '');
+    String? country = _profile?['country'] ?? _profile?['location'];
+    final countries = ['Antigua and Barbuda','Bahamas','Barbados','Belize','Dominica','Grenada','Guyana','Haiti','Jamaica','Montserrat','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Suriname','Trinidad and Tobago','Other Caribbean','Other'];
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModal) => Padding(
+          padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Edit Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder())),
+              const SizedBox(height: 12),
+              TextField(controller: bioCtrl, decoration: const InputDecoration(labelText: 'Bio', border: OutlineInputBorder()), maxLines: 3),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: countries.contains(country) ? country : null,
+                decoration: const InputDecoration(labelText: 'Country', border: OutlineInputBorder()),
+                items: countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                onChanged: (v) => setModal(() => country = v),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF5B8DB8), foregroundColor: Colors.white),
+                  onPressed: () async {
+                    final user = Supabase.instance.client.auth.currentUser;
+                    if (user == null) return;
+                    await Supabase.instance.client.from('profiles').update({
+                      'full_name': nameCtrl.text.trim(),
+                      'bio': bioCtrl.text.trim(),
+                      'country': country ?? '',
+                    }).eq('id', user.id);
+                    if (mounted) { Navigator.pop(ctx); _fetchProfile(); }
+                  },
+                  child: const Text('Save Changes'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _uploadAvatar() async {
     final img = await _picker.pickImage(source: ImageSource.gallery, maxWidth: 512);
     if (img == null) return;
