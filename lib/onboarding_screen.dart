@@ -11,9 +11,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   final List<_Slide> _slides = const [
-    _Slide(image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80', title: 'Find Jobs Across The Caribbean', subtitle: 'Browse full-time, part-time and contract jobs from SVG to Jamaica and beyond.'),
-    _Slide(image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', title: 'Post & Find Services', subtitle: 'Hire skilled tradespeople, designers, tutors and more or offer your own services.'),
-    _Slide(image: 'https://images.unsplash.com/photo-1600880292203-757bb69b4f2c?w=600&q=80', title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.'),
+    _Slide(image: 'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000d09871f7947fe7156df8be3e.jpg', title: 'Find Jobs Across The Caribbean', subtitle: 'Browse full-time, part-time and contract jobs from SVG to Jamaica and beyond.'),
+    _Slide(image: 'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000f32c71f7b60152098e305915.jpg', title: 'Post & Find Services', subtitle: 'Hire skilled tradespeople, designers, tutors and more or offer your own services.'),
+    _Slide(image: 'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_0000000020a471f793f01f5fb6403f07.jpg', title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.'),
   ];
 
   void _nextPage() {
