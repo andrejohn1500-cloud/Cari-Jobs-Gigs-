@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'my_listings_screen.dart';
+import 'privacy_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
