@@ -9,6 +9,7 @@ class MyListingsScreen extends StatefulWidget {
 }
 
 class _MyListingsScreenState extends State<MyListingsScreen> {
+  final _supabase = Supabase.instance.client;
   List<dynamic> _listings = [];
   bool _loading = true;
 
