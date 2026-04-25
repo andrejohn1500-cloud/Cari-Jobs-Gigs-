@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'my_listings_screen.dart';
+import 'saved_jobs_screen.dart';
+import 'notifications_screen.dart';
+import 'applications_screen.dart';
 import 'privacy_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
