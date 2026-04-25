@@ -12,6 +12,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  String? _selectedCountry;
   bool _loading = false;
   bool _obscure = true;
 
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final res = await Supabase.instance.client.auth.signUp(
         email: email,
         password: password,
-        data: {'full_name': name},
+        data: {'full_name': name, 'country': _selectedCountry ?? ''}
         emailRedirectTo: 'com.dresapps.cariworks://login-callback',
       );
       if (res.user != null) {
@@ -113,6 +114,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 16),
               _label('Confirm Password'),
               _field(_confirmController, 'Re-enter password', Icons.lock_outline, obscure: true),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _selectedCountry,
+                  decoration: InputDecoration(
+                    labelText: 'Country',
+                    prefixIcon: const Icon(Icons.public, color: Color(0xFF5B8DB8)),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  ),
+                  items: ['Antigua and Barbuda','Bahamas','Barbados','Belize','Dominica','Grenada','Guyana','Haiti','Jamaica','Montserrat','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Suriname','Trinidad and Tobago','Other Caribbean','Other']
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                  onChanged: (v) => setState(() => _selectedCountry = v),
+                ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
