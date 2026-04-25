@@ -1,5 +1,7 @@
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
+import 'saved_jobs_screen.dart';
+import 'applications_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'messages_screen.dart';
 import 'post_screen.dart';
@@ -144,6 +146,29 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: const Row(children: [SizedBox(width: 16), Icon(Icons.search_rounded, color: Color(0xFF5B8DB8), size: 22), SizedBox(width: 10), Text('Search jobs, gigs, companies...', style: TextStyle(color: Color(0xFFB2BEC3), fontSize: 15))]),
   );
+
+
+  Future<void> _saveJob(String listingId) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+    try {
+      await Supabase.instance.client.from('saved_jobs').insert({'user_id': user.id, 'listing_id': listingId});
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Job saved!'), backgroundColor: Color(0xFF5B8DB8)));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Already saved.'), backgroundColor: Colors.orange));
+    }
+  }
+
+  Future<void> _applyJob(String listingId) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+    try {
+      await Supabase.instance.client.from('applications').insert({'user_id': user.id, 'listing_id': listingId});
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Applied successfully!'), backgroundColor: Colors.green));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Already applied.'), backgroundColor: Colors.orange));
+    }
+  }
 
   Widget _buildSectionHeader(String title) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
