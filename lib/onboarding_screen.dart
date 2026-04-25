@@ -13,7 +13,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<_Slide> _slides = const [
     _Slide(image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80', title: 'Find Jobs Across The Caribbean', subtitle: 'Browse full-time, part-time and contract jobs from SVG to Jamaica and beyond.'),
     _Slide(image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', title: 'Post & Find Services', subtitle: 'Hire skilled tradespeople, designers, tutors and more or offer your own services.'),
-    _Slide(image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80', title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.'),
+    _Slide(image: 'https://images.unsplash.com/photo-1600880292203-757bb69b4f2c?w=600&q=80', title: 'Connect With Local Employers', subtitle: 'Message employers directly, track your applications and grow your Caribbean career.'),
   ];
 
   void _nextPage() {
@@ -46,26 +46,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemBuilder: (context, i) {
                   final slide = _slides[i];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 36),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  slide.image,
-                  width: double.infinity,
-                  height: 260,
-                  fit: BoxFit.cover,
-                  errorBuilder: (ctx, e, st) => Container(
-                    height: 260, color: Color(0xFFE8F0FE),
-                    child: Icon(Icons.image_not_supported, size: 60, color: Color(0xFF5B8DB8))),
-                ),
-              ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            slide.image,
+                            width: double.infinity,
+                            height: 260,
+                            fit: BoxFit.cover,
+                            errorBuilder: (ctx, e, st) => Container(
+                              height: 260,
+                              color: const Color(0xFFE8F0FE),
+                              child: const Icon(Icons.image_not_supported, size: 60, color: Color(0xFF5B8DB8)),
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 40),
                         Text(slide.title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2D3436), height: 1.3)),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         Text(slide.subtitle, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15, color: Color(0xFF636E72), height: 1.6)),
                       ],
                     ),
@@ -86,11 +87,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               )),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 36),
               child: SizedBox(
-                width: double.infinity, height: 56,
+                width: double.infinity,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _nextPage,
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF5B8DB8), foregroundColor: Colors.white, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
