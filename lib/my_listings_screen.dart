@@ -64,6 +64,11 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                             icon: Icon(j['featured'] == true ? Icons.star : Icons.star_border, color: const Color(0xFFFFD700)),
                             tooltip: 'Feature this listing',
                             onPressed: () async {
+                  await _supabase.from('featured_payments').insert({
+                    'listing_id': j['id'].toString(),
+                    'user_id': _supabase.auth.currentUser!.id,
+                    'status': 'pending',
+                  });
                               final uri = Uri.parse('https://www.paypal.com/ncp/payment/YEMJYJZAPB66C');
                               if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
                             },
