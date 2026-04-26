@@ -311,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leading: Icon(icon, color: const Color(0xFF5B8DB8)),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
       trailing: const Icon(Icons.chevron_right, color: Colors.black26),
-      onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$label coming soon!'), backgroundColor: const Color(0xFF5B8DB8))),
+          onTap: () => _showEditProfile(),
     ),
   );
 }
