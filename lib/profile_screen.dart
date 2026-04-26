@@ -251,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 24),
                         const Text('Account', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54)),
                         const SizedBox(height: 12),
-                        _menuItem(Icons.person_outline, 'Edit Profile', context),
+                            _menuItem(Icons.person_outline, 'Edit Profile', context, onTap: _showEditProfile),
                         _menuItem(Icons.work_outline, 'My Applications', context),
                         _menuItem(Icons.bookmark_outline, 'Saved Jobs', context),
                         _menuItem(Icons.post_add, 'My Listings', context),
