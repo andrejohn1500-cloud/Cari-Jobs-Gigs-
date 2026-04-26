@@ -304,14 +304,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ]),
   );
 
-  static Widget _menuItem(IconData icon, String label, BuildContext context) => Container(
+  static Widget _menuItem(IconData icon, String label, BuildContext context, {VoidCallback? onTap}) => Container(
     margin: const EdgeInsets.only(bottom: 10),
     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
     child: ListTile(
       leading: Icon(icon, color: const Color(0xFF5B8DB8)),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
       trailing: const Icon(Icons.chevron_right, color: Colors.black26),
-          onTap: () => _showEditProfile(),
+          onTap: onTap,
     ),
   );
 }
