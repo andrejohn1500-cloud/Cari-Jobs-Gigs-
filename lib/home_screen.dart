@@ -262,7 +262,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
         Text(j['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
       ]),
     ]),
-  );
+  ),
   );
 
   Widget _buildGigCard(Map<String, dynamic> g) => GestureDetector(
@@ -283,7 +283,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
       Text(g['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFD4A843))),
     ]),
   );
-  );
+  ),
 }
 
 class SearchTab extends StatelessWidget {
