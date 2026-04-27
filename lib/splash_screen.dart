@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
+import 'login_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -61,11 +63,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     await Future.delayed(const Duration(milliseconds: 900));
     if (mounted) await _exitController.forward();
     if (mounted) {
+      final session = Supabase.instance.client.auth.currentSession;
       Navigator.pushReplacement(
         context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const HomeScreen(),
-          transitionDuration: Duration.zero,
+        MaterialPageRoute(
+          builder: (_) => session != null ? const HomeScreen() : const LoginScreen(),
         ),
       );
     }
