@@ -15,11 +15,14 @@ class _PostScreenState extends State<PostScreen> {
   final _salaryController = TextEditingController();
   final _descController = TextEditingController();
   String _jobType = 'Full-Time';
+  String _category = 'Trades';
   bool _loading = false;
 
   final _types = ['Employer', 'Worker / Freelancer'];
   final _jobTypes = ['Full-Time', 'Part-Time', 'Contract', 'Remote'];
+  final _categories = ['Trades', 'Tech', 'Creative', 'Education', 'Marketing', 'Food'];
 
+  // ignore: unused_field
   String? _accountType;
 
   @override
@@ -77,6 +80,7 @@ class _PostScreenState extends State<PostScreen> {
         'location': _locationController.text.trim(),
         'salary': _salaryController.text.trim(),
         'job_type': _jobType,
+        'category': _category,
         'description': _descController.text.trim(),
         'created_at': DateTime.now().toIso8601String(),
       });
@@ -109,7 +113,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFAF5),
+      backgroundColor: const Color(0xFFFFFAF5),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -145,7 +149,7 @@ class _PostScreenState extends State<PostScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            _label('${_type} Title *'),
+            _label('$_type Title *'),
             _field(_titleController, 'e.g. Senior Web Developer'),
             const SizedBox(height: 16),
             _label(_type == 'Employer' ? 'Company Name *' : 'Your Name / Brand *'),
@@ -159,7 +163,7 @@ class _PostScreenState extends State<PostScreen> {
             const SizedBox(height: 16),
             _label('Type'),
             DropdownButtonFormField<String>(
-              value: _jobType,
+              initialValue: _jobType,
               decoration: InputDecoration(
                 filled: true, fillColor: Colors.white,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -169,6 +173,18 @@ class _PostScreenState extends State<PostScreen> {
               onChanged: (v) => setState(() => _jobType = v!),
             ),
             const SizedBox(height: 16),
+        const SizedBox(height: 16),
+        _label('Category *'),
+        DropdownButtonFormField<String>(
+          initialValue: _category,
+          decoration: InputDecoration(
+            filled: true, fillColor: Colors.white,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          ),
+          items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+          onChanged: (v) => setState(() => _category = v!),
+        ),
             _label('Description *'),
             TextFormField(
               controller: _descController,

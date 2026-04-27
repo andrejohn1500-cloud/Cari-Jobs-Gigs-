@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     // Carriages sweep past
-    _carriageCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    _carriageCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
     _carriageOffset = Tween<double>(begin: 1.0, end: -7.0).animate(
       CurvedAnimation(parent: _carriageCtrl, curve: Curves.easeIn),
     );
@@ -172,7 +172,7 @@ class _SplashScreenState extends State<SplashScreen>
       height: height,
       margin: const EdgeInsets.only(right: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A2E),
+        color: const Color(0xFF0D0D1F),
         border: Border.all(color: data['color'] as Color, width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
