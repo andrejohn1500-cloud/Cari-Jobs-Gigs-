@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'my_listings_screen.dart';
-import 'saved_jobs_screen.dart';
-import 'notifications_screen.dart';
-import 'applications_screen.dart';
-import 'privacy_screen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'help_screen.dart';
 
@@ -19,6 +14,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? _profile;
   bool _loading = true;
+  bool _isPremium = false;
   String? _avatarUrl;
   final _picker = ImagePicker();
 
@@ -38,6 +34,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .eq('id', user.id)
             .maybeSingle();
         if (mounted) setState(() { _profile = data; _avatarUrl = data?['avatar_url']; _loading = false; });
+      // Check premium status
+      try {
+        final pd = await Supabase.instance.client.from('premium_seekers')
+          .select('premium_until').eq('user_id', user.id).eq('status', 'active').maybeSingle();
+        final pu = pd?['premium_until'];
+        if (mounted) setState(() => _isPremium = pu != null && DateTime.parse(pu).isAfter(DateTime.now()));
+      } catch (_) {}
       }
     } catch (e) {
       if (mounted) setState(() => _loading = false);
@@ -69,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextField(controller: bioCtrl, decoration: const InputDecoration(labelText: 'Bio', border: OutlineInputBorder()), maxLines: 3),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: countries.contains(country) ? country : null,
+                initialValue: countries.contains(country) ? country : null,
                 decoration: const InputDecoration(labelText: 'Country', border: OutlineInputBorder()),
                 items: countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                 onChanged: (v) => setModal(() => country = v),
@@ -87,6 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'bio': bioCtrl.text.trim(),
                       'country': country ?? '',
                     }).eq('id', user.id);
+                    // ignore: use_build_context_synchronously
                     if (mounted) { Navigator.pop(ctx); _fetchProfile(); }
                   },
                   child: const Text('Save Changes'),
@@ -211,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                if (_profile?['account_type'] == 'jobseeker')
+                if (_profile?['account_type'] == 'jobseeker' && !_isPremium)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     child: ElevatedButton.icon(
@@ -285,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onTap: _logout,
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: Colors.red.withOpacity(0.3))),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: Colors.red.withValues(alpha: 0.3))),
                             child: ListTile(
                               leading: const Icon(Icons.logout, color: Colors.red),
                               title: const Text('Log Out', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.red)),
@@ -304,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   static Widget _statBox(String label, String val) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
     child: Column(children: [
       Text(val, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
       Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
