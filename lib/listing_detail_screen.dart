@@ -1,16 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ListingDetailScreen extends StatelessWidget {
+class ListingDetailScreen extends StatefulWidget {
   final Map<String, dynamic> listing;
   const ListingDetailScreen({super.key, required this.listing});
 
   @override
+  State<ListingDetailScreen> createState() => _ListingDetailScreenState();
+}
+
+class _ListingDetailScreenState extends State<ListingDetailScreen> {
+  bool _isSaved = false;
+  bool _isApplied = false;
+
+  Future<void> _saveJob() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) { _showSnack('Sign in to save listings', Colors.orange); return; }
+    final listingId = widget.listing['id'] ?? '';
+    try {
+      await Supabase.instance.client.from('saved_jobs').insert({'user_id': user.id, 'listing_id': listingId});
+      if (mounted) { setState(() => _isSaved = true); _showSnack('Listing saved!', const Color(0xFF5B8DB8)); }
+    } catch (e) {
+      if (mounted) _showSnack('Already saved', Colors.orange);
+    }
+  }
+
+  Future<void> _applyJob() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) { _showSnack('Sign in to apply', Colors.orange); return; }
+    final listingId = widget.listing['id'] ?? '';
+    try {
+      await Supabase.instance.client.from('applications').insert({'user_id': user.id, 'listing_id': listingId});
+      if (mounted) setState(() => _isApplied = true);
+    } catch (e) { /* already applied */ }
+  }
+
+  void _showSnack(String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: color));
+  }
+
+  Future<void> _handleApplyNow() async {
+    await _applyJob();
+    final email = widget.listing['contact_email'] ?? '';
+    if (email.isNotEmpty) {
+      final uri = Uri.parse('mailto:$email?subject=Application for ${widget.listing["title"]}');
+      await launchUrl(uri);
+    } else {
+      if (mounted) _showSnack('No contact info available', Colors.grey);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isJob = listing['type'] == 'Job';
-    final color = isJob ? const Color(0xFFFF5B8DB8) : const Color(0xFFFFD4A843);
+    final isJob = widget.listing['type'] == 'Job';
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFAF8),
+      backgroundColor: const Color(0xFFFFFAF8),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -20,54 +65,55 @@ class ListingDetailScreen extends StatelessWidget {
         ),
         title: Text(isJob ? 'Job Details' : 'Service Details',
             style: const TextStyle(color: Color(0xFF2D3436), fontWeight: FontWeight.bold)),
+        actions: [
+          IconButton(
+            icon: Icon(_isSaved ? Icons.bookmark : Icons.bookmark_border, color: const Color(0xFF5B8DB8)),
+            onPressed: _saveJob,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (listing['featured'] == true)
+            if (widget.listing['featured'] == true)
               Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(color: const Color(0xFFFFD700), borderRadius: BorderRadius.circular(4)),
                 child: const Text('⭐ Featured', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
               ),
-            Text(listing['title'] ?? '', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
+            Text(widget.listing['title'] ?? '',
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
             const SizedBox(height: 8),
-            Text(listing['company'] ?? listing['user_id'] ?? '', style: const TextStyle(fontSize: 16, color: Color(0xFF636E72))),
+            Text(widget.listing['company'] ?? widget.listing['user_id'] ?? '',
+                style: const TextStyle(fontSize: 16, color: Color(0xFF636E72))),
             const SizedBox(height: 16),
-            _infoRow(Icons.location_on_outlined, listing['location'] ?? 'Location not specified'),
+            _infoRow(Icons.location_on_outlined, widget.listing['location'] ?? 'Location not specified'),
             const SizedBox(height: 8),
-            _infoRow(Icons.work_outline, listing['job_type'] ?? listing['type'] ?? ''),
-            if (listing['salary'] != null) ...[
+            _infoRow(Icons.work_outline, widget.listing['job_type'] ?? widget.listing['type'] ?? ''),
+            if (widget.listing['salary'] != null) ...[
               const SizedBox(height: 8),
-              _infoRow(Icons.payments_outlined, listing['salary']),
+              _infoRow(Icons.payments_outlined, widget.listing['salary']),
             ],
             const SizedBox(height: 24),
             const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
             const SizedBox(height: 8),
-            Text(listing['description'] ?? 'No description provided.', style: const TextStyle(fontSize: 14, color: Color(0xFF636E72), height: 1.6)),
+            Text(widget.listing['description'] ?? 'No description provided.',
+                style: const TextStyle(fontSize: 14, color: Color(0xFF636E72), height: 1.6)),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF5B8DB8),
+                  backgroundColor: const Color(0xFF5B8DB8),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                onPressed: () async {
-                  final email = listing['contact_email'] ?? '';
-                  if (email.isNotEmpty) {
-                    final uri = Uri.parse('mailto:$email?subject=Application for ${listing['title']}');
-                    await launchUrl(uri);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('No contact info available')));
-                  }
-                },
-                child: const Text('Apply Now', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                onPressed: _isApplied ? null : _handleApplyNow,
+                child: Text(_isApplied ? 'Applied ✓' : 'Apply Now',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             ),
           ],
@@ -77,10 +123,10 @@ class ListingDetailScreen extends StatelessWidget {
   }
 
   Widget _infoRow(IconData icon, String text) => Row(
-    children: [
-      Icon(icon, size: 16, color: const Color(0xFF636E72)),
-      const SizedBox(width: 6),
-      Expanded(child: Text(text, style: const TextStyle(fontSize: 14, color: Color(0xFF636E72)))),
-    ],
-  );
+        children: [
+          Icon(icon, size: 16, color: const Color(0xFF636E72)),
+          const SizedBox(width: 6),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 14, color: Color(0xFF636E72)))),
+        ],
+      );
 }

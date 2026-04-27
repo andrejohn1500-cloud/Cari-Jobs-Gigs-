@@ -1,7 +1,5 @@
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
-import 'saved_jobs_screen.dart';
-import 'applications_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'messages_screen.dart';
 import 'post_screen.dart';
@@ -36,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         shadowColor: Colors.black12,
         elevation: 8,
-        indicatorColor: const Color(0xFF5B8DB8).withOpacity(0.15),
+        indicatorColor: const Color(0xFF5B8DB8).withValues(alpha: 0.15),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home, color: Color(0xFF5B8DB8)), label: 'Home'),
@@ -114,19 +112,19 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
                   children: [
                     _buildSearchBar(),
                     const SizedBox(height: 24),
-                    _buildSectionHeader('Browse Categories'),
+                    _buildSectionHeader('Browse Categories', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()))),
                     const SizedBox(height: 14),
                     _buildCategories(),
                     const SizedBox(height: 24),
                     _buildUrgentBanner(),
                     const SizedBox(height: 24),
-                    _buildSectionHeader('Latest Jobs'),
+                    _buildSectionHeader('Latest Jobs', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'jobs')))),
                     const SizedBox(height: 14),
                     if (_loading) const Center(child: CircularProgressIndicator())
                     else if (_jobs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No jobs posted yet. Be the first!', style: TextStyle(color: Colors.grey))))
                     else ..._jobs.map((j) => Padding(padding: const EdgeInsets.only(bottom: 12), child: _buildJobCard(j))),
                     const SizedBox(height: 24),
-                    _buildSectionHeader('Featured Services'),
+                    _buildSectionHeader('Featured Services', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'gigs')))),
                     const SizedBox(height: 14),
                     if (_loading) const SizedBox()
                     else if (_gigs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No services posted yet.', style: TextStyle(color: Colors.grey))))
@@ -144,38 +142,18 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
 
   Widget _buildSearchBar() => Container(
     height: 52,
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: const Row(children: [SizedBox(width: 16), Icon(Icons.search_rounded, color: Color(0xFF5B8DB8), size: 22), SizedBox(width: 10), Text('Search jobs, gigs, companies...', style: TextStyle(color: Color(0xFFB2BEC3), fontSize: 15))]),
   );
 
 
-  Future<void> _saveJob(String listingId) async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return;
-    try {
-      await Supabase.instance.client.from('saved_jobs').insert({'user_id': user.id, 'listing_id': listingId});
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Job saved!'), backgroundColor: Color(0xFF5B8DB8)));
-    } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Already saved.'), backgroundColor: Colors.orange));
-    }
-  }
 
-  Future<void> _applyJob(String listingId) async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return;
-    try {
-      await Supabase.instance.client.from('applications').insert({'user_id': user.id, 'listing_id': listingId});
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Applied successfully!'), backgroundColor: Colors.green));
-    } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Already applied.'), backgroundColor: Colors.orange));
-    }
-  }
 
-  Widget _buildSectionHeader(String title) => Row(
+  Widget _buildSectionHeader(String title, {VoidCallback? onSeeAll}) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
-      Text('See all', style: const TextStyle(fontSize: 14, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600)),
+      GestureDetector(onTap: onSeeAll, child: Text('See all', style: const TextStyle(fontSize: 14, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
     ],
   );
 
@@ -205,7 +183,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
                   width: 56, height: 56, fit: BoxFit.cover,
                   errorBuilder: (c, e, s) => Container(
                     width: 56, height: 56,
-                    decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withOpacity(0.12), borderRadius: BorderRadius.circular(16)),
+                    decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(16)),
                     child: const Icon(Icons.image, color: Color(0xFF5B8DB8), size: 26),
                   ),
                 ),
@@ -237,9 +215,9 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: j))),
     child: Container(
     padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Row(children: [
-      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withOpacity(0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Icons.business_center_rounded, color: Color(0xFF5B8DB8), size: 26)),
+      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Icons.business_center_rounded, color: Color(0xFF5B8DB8), size: 26)),
       const SizedBox(width: 14),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -257,7 +235,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
         Row(children: [const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFFB2BEC3)), const SizedBox(width: 3), Text(j['location'] ?? '', style: const TextStyle(fontSize: 12, color: Color(0xFFB2BEC3)))]),
       ])),
       Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withOpacity(0.1), borderRadius: BorderRadius.circular(8)), child: Text(j['job_type'] ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: Text(j['job_type'] ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
         const SizedBox(height: 8),
         Text(j['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
       ]),
@@ -269,9 +247,9 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: g))),
     child: Container(
     padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Row(children: [
-      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFFD4A843).withOpacity(0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Symbols.brush, color: Color(0xFFD4A843), size: 26)),
+      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFFD4A843).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Symbols.brush, color: Color(0xFFD4A843), size: 26)),
       const SizedBox(width: 14),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(g['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),

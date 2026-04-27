@@ -3,7 +3,8 @@ import 'listing_detail_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, this.initialTab});
+  final String? initialTab;
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
@@ -23,7 +24,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.initialTab == 'gigs' ? 1 : 0);
     _fetchAll();
   }
 
