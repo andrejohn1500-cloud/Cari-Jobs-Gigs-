@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'listing_detail_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -11,10 +12,10 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
   late TabController _tabController;
   final _searchController = TextEditingController();
   String _query = '';
-  String _selectedCategory = 'All';
-  String _selectedCountry = 'All';
-  final List<String> _categories = ['All', 'IT', 'Construction', 'Healthcare', 'Education', 'Retail', 'Hospitality', 'Agriculture', 'Finance', 'Other'];
-  final List<String> _countries = ['All', 'Saint Vincent', 'Barbados', 'Trinidad', 'Jamaica', 'Grenada', 'Saint Lucia', 'Antigua', 'Dominica'];
+  final String _selectedCategory = 'All';
+  final String _selectedCountry = 'All';
+  final List<String> _categories = ['All', 'IT', 'Construction', 'Healthcare', 'Education', 'Retail', 'Hospitality', 'Agriculture', 'Finance', 'Other']; // ignore: unused_field
+  final List<String> _countries = ['All', 'Saint Vincent', 'Barbados', 'Trinidad', 'Jamaica', 'Grenada', 'Saint Lucia', 'Antigua', 'Dominica']; // ignore: unused_field
   List<Map<String, dynamic>> _jobs = [];
   List<Map<String, dynamic>> _gigs = [];
   bool _loading = true;
@@ -40,11 +41,13 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
           .from('listings').select().eq('type', 'Employer').order('created_at', ascending: false);
       final gigs = await Supabase.instance.client
           .from('listings').select().eq('type', 'Worker / Freelancer').order('created_at', ascending: false);
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         _jobs = List<Map<String, dynamic>>.from(jobs);
         _gigs = List<Map<String, dynamic>>.from(gigs);
         _loading = false;
       });
+      }
     } catch (e) {
       if (mounted) setState(() => _loading = false);
     }
@@ -141,10 +144,12 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
     );
   }
 
-  Widget _buildJobCard(Map<String, dynamic> j) => Container(
+  Widget _buildJobCard(Map<String, dynamic> j) => GestureDetector(
+    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: j))),
+    child: Container(
     margin: const EdgeInsets.only(bottom: 12),
     padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(j['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
       const SizedBox(height: 4),
@@ -155,17 +160,19 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
         const SizedBox(width: 3),
         Text(j['location'] ?? '', style: const TextStyle(fontSize: 12, color: Color(0xFFB2BEC3))),
         const Spacer(),
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withOpacity(0.1), borderRadius: BorderRadius.circular(8)), child: Text(j['job_type'] ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: Text(j['job_type'] ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
       ]),
       const SizedBox(height: 6),
       Text(j['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
     ]),
-  );
+  ));
 
-  Widget _buildGigCard(Map<String, dynamic> g) => Container(
+  Widget _buildGigCard(Map<String, dynamic> g) => GestureDetector(
+    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: g))),
+    child: Container(
     margin: const EdgeInsets.only(bottom: 12),
     padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))]),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(g['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
       const SizedBox(height: 4),
@@ -179,5 +186,5 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
         Text(g['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF5B8DB8))),
       ]),
     ]),
-  );
+  ));
 }
