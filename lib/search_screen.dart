@@ -83,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            color: Colors.white,
+            color: const Color(0xFFF5F5F5),
             child: Column(
               children: [
                 Container(
