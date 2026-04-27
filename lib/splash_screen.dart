@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,9 +32,9 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
 
     // Train rushing toward you
-    _trainCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800));
+    _trainCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
     _trainScale = Tween<double>(begin: 0.02, end: 18.0).animate(
-      CurvedAnimation(parent: _trainCtrl, curve: Curves.easeIn),
+      CurvedAnimation(parent: _trainCtrl, curve: Curves.easeInCubic),
     );
     _trainOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _trainCtrl, curve: const Interval(0.75, 1.0, curve: Curves.easeOut)),
@@ -44,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen>
     // Carriages sweep past
     _carriageCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
     _carriageOffset = Tween<double>(begin: 1.0, end: -7.0).animate(
-      CurvedAnimation(parent: _carriageCtrl, curve: Curves.easeIn),
+      CurvedAnimation(parent: _carriageCtrl, curve: Curves.easeInCubic),
     );
 
     // Logo fade in
@@ -62,9 +61,9 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _runSequence() async {
     await Future.delayed(const Duration(milliseconds: 300));
     _trainCtrl.forward();
-    await Future.delayed(const Duration(milliseconds: 1400));
+    await Future.delayed(const Duration(milliseconds: 2600));
     _carriageCtrl.forward();
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 1100));
     _logoCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 1200));
     if (!mounted) return;
@@ -106,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen>
           // Train rushing toward camera
           AnimatedBuilder(
             animation: _trainCtrl,
-            builder: (_, __) => Opacity(
+            builder: (context, child) => Opacity(
               opacity: _trainOpacity.value,
               child: Center(
                 child: Transform.scale(
@@ -120,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen>
           // Carriages sweeping past
           AnimatedBuilder(
             animation: _carriageCtrl,
-            builder: (_, __) {
+            builder: (context, child) {
               if (!_carriageCtrl.isAnimating && _carriageCtrl.value == 0) {
                 return const SizedBox.shrink();
               }
@@ -142,7 +141,7 @@ class _SplashScreenState extends State<SplashScreen>
           // CariWorks logo
           AnimatedBuilder(
             animation: _logoCtrl,
-            builder: (_, __) => Opacity(
+            builder: (context, child) => Opacity(
               opacity: _logoFade.value,
               child: Center(
                 child: Transform.scale(
@@ -290,45 +289,95 @@ class _TrainFrontPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
+    final pink = const Color(0xFFFF5B8B);
+    final orange = const Color(0xFFFF8C42);
+    final navy = const Color(0xFF0D0D1F);
 
     // Body
-    final bodyPaint = Paint()..color = const Color(0xFF1A1A2E);
+    final bodyPaint = Paint()..color = navy;
     final borderPaint = Paint()
-      ..color = const Color(0xFFFF5B8B)
+      ..color = pink
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-    final rr = RRect.fromRectAndRadius(
-      Rect.fromLTWH(w * 0.05, h * 0.1, w * 0.9, h * 0.75),
-      const Radius.circular(12),
+      ..strokeWidth = 3.5;
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(w * 0.04, h * 0.05, w * 0.92, h * 0.72),
+      const Radius.circular(14),
     );
-    canvas.drawRRect(rr, bodyPaint);
-    canvas.drawRRect(rr, borderPaint);
+    canvas.drawRRect(body, bodyPaint);
+    canvas.drawRRect(body, borderPaint);
+
+    // Cabin roof
+    final roofPaint = Paint()..color = pink.withValues(alpha: 0.3);
+    final roofBorder = Paint()
+      ..color = pink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(w*0.15, h*0.02, w*0.70, h*0.06), const Radius.circular(6)),
+      roofPaint);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(w*0.15, h*0.02, w*0.70, h*0.06), const Radius.circular(6)),
+      roofBorder);
+
+    // Horn
+    final hornPaint = Paint()..color = orange..style = PaintingStyle.stroke..strokeWidth = 3;
+    canvas.drawLine(Offset(w*0.28, h*0.02), Offset(w*0.28, h*-0.01), hornPaint);
+    canvas.drawLine(Offset(w*0.24, h*-0.01), Offset(w*0.32, h*-0.01), hornPaint);
+
+    // Left window
+    final winPaint = Paint()..color = pink.withValues(alpha: 0.15);
+    final winBorder = Paint()..color = pink..style = PaintingStyle.stroke..strokeWidth = 2;
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.08, h*0.12, w*0.33, h*0.20), const Radius.circular(6)), winPaint);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.08, h*0.12, w*0.33, h*0.20), const Radius.circular(6)), winBorder);
+
+    // Right window
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.59, h*0.12, w*0.33, h*0.20), const Radius.circular(6)), winPaint);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*0.59, h*0.12, w*0.33, h*0.20), const Radius.circular(6)), winBorder);
 
     // Headlight glow
     final glowPaint = Paint()
       ..shader = RadialGradient(
-        colors: [Colors.white, const Color(0xFFFF5B8B).withValues(alpha: 0.0)],
-      ).createShader(Rect.fromCircle(center: Offset(w / 2, h * 0.35), radius: w * 0.25));
-    canvas.drawCircle(Offset(w / 2, h * 0.35), w * 0.25, glowPaint);
+        colors: [Colors.white, Colors.white.withValues(alpha: 0.0)],
+      ).createShader(Rect.fromCircle(center: Offset(w/2, h*0.42), radius: w*0.28));
+    canvas.drawCircle(Offset(w/2, h*0.42), w*0.28, glowPaint);
 
     // Headlight
-    final hlPaint = Paint()..color = Colors.white;
-    canvas.drawCircle(Offset(w / 2, h * 0.35), w * 0.13, hlPaint);
+    canvas.drawCircle(Offset(w/2, h*0.42), w*0.14, Paint()..color = Colors.white);
+    canvas.drawCircle(Offset(w/2, h*0.42), w*0.16, Paint()..color = orange..style = PaintingStyle.stroke..strokeWidth = 3);
+
+    // Side lights
+    canvas.drawCircle(Offset(w*0.14, h*0.42), w*0.05, Paint()..color = orange);
+    canvas.drawCircle(Offset(w*0.86, h*0.42), w*0.05, Paint()..color = orange);
+
+    // Grille lines
+    final grillePaint = Paint()..color = pink.withValues(alpha: 0.5)..strokeWidth = 1.5..style = PaintingStyle.stroke;
+    for (int i = 0; i < 4; i++) {
+      canvas.drawLine(Offset(w*0.25, h*0.58 + i*h*0.025), Offset(w*0.75, h*0.58 + i*h*0.025), grillePaint);
+    }
 
     // Bumper
-    final bumperPaint = Paint()
-      ..color = const Color(0xFFFF8C42)
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke;
-    canvas.drawLine(Offset(w * 0.1, h * 0.88), Offset(w * 0.9, h * 0.88), bumperPaint);
+    canvas.drawLine(Offset(w*0.08, h*0.80), Offset(w*0.92, h*0.80),
+      Paint()..color = orange..strokeWidth = 5..style = PaintingStyle.stroke..strokeCap = StrokeCap.round);
 
-    // Wheels
-    final wheelPaint = Paint()
-      ..color = const Color(0xFFFF5B8B)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
-    canvas.drawCircle(Offset(w * 0.25, h * 0.93), w * 0.13, wheelPaint);
-    canvas.drawCircle(Offset(w * 0.75, h * 0.93), w * 0.13, wheelPaint);
+    // Coupler
+    canvas.drawRect(Rect.fromLTWH(w*0.42, h*0.80, w*0.16, h*0.04), Paint()..color = orange);
+
+    // ignore: unnecessary_underscores
+    // Wheels with spokes
+    for (final cx in [w*0.22, w*0.78]) {
+      canvas.drawCircle(Offset(cx, h*0.92), w*0.14, Paint()..color = navy);
+      canvas.drawCircle(Offset(cx, h*0.92), w*0.14, Paint()..color = pink..style = PaintingStyle.stroke..strokeWidth = 3);
+      final sp = Paint()..color = orange..strokeWidth = 2;
+      canvas.drawLine(Offset(cx - w*0.10, h*0.92), Offset(cx + w*0.10, h*0.92), sp);
+      canvas.drawLine(Offset(cx, h*0.92 - w*0.10), Offset(cx, h*0.92 + w*0.10), sp);
+      canvas.drawLine(Offset(cx - w*0.07, h*0.92 - w*0.07), Offset(cx + w*0.07, h*0.92 + w*0.07), sp);
+      canvas.drawLine(Offset(cx + w*0.07, h*0.92 - w*0.07), Offset(cx - w*0.07, h*0.92 + w*0.07), sp);
+      canvas.drawCircle(Offset(cx, h*0.92), w*0.04, Paint()..color = orange);
+    }
+
+    // Axle
+    canvas.drawLine(Offset(w*0.22, h*0.92), Offset(w*0.78, h*0.92),
+      Paint()..color = orange.withValues(alpha: 0.4)..strokeWidth = 2);
   }
 
   @override
