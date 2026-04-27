@@ -78,7 +78,9 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAF8F5),
+      body: SafeArea(
       child: Column(
         children: [
           Container(
@@ -142,6 +144,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
                   ),
           ),
         ],
+      ),
       ),
     );
   }
