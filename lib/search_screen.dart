@@ -25,6 +25,9 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    if (widget.initialCategory != null && widget.initialCategory != '') {
+      _selectedCategory = widget.initialCategory!;
+    }
     _tabController = TabController(length: 2, vsync: this, initialIndex: widget.initialTab == 'gigs' ? 1 : 0);
     _fetchAll();
   }
