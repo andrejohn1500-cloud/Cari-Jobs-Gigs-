@@ -88,6 +88,9 @@ class _SplashScreenState extends State<SplashScreen>
                 child: ScaleTransition(
                   scale: _scaleAnim,
                   child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
                     width: 140,
                     height: 140,
                     decoration: BoxDecoration(
