@@ -76,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
     return _gigs.where((g) =>
       (g['title'] ?? '').toLowerCase().contains(q) ||
       (g['company'] ?? '').toLowerCase().contains(q)
-    ).toList();
+    ).where((g) => _selectedCategory == 'All' || (g['category'] ?? '') == _selectedCategory).toList();
   }
 
   @override
