@@ -23,27 +23,25 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
     _logoController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 800));
+      vsync: this, duration: const Duration(milliseconds: 800));
     _textController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
+      vsync: this, duration: const Duration(milliseconds: 600));
     _exitController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 400));
-
+      vsync: this, duration: const Duration(milliseconds: 400));
     _scaleAnim = Tween<double>(begin: 0.3, end: 1.0).animate(
-        CurvedAnimation(parent: _logoController, curve: Curves.elasticOut));
+      CurvedAnimation(parent: _logoController, curve: Curves.elasticOut));
     _logoFadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _logoController,
-            curve: const Interval(0.0, 0.5, curve: Curves.easeIn)));
+      CurvedAnimation(
+        parent: _logoController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeIn)));
     _textFadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _textController, curve: Curves.easeIn));
-    _textSlideAnim =
-        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-            CurvedAnimation(parent: _textController, curve: Curves.easeOut));
+      CurvedAnimation(parent: _textController, curve: Curves.easeIn));
+    _textSlideAnim = Tween<Offset>(
+      begin: const Offset(0, 0.5), end: Offset.zero).animate(
+      CurvedAnimation(parent: _textController, curve: Curves.easeOut));
     _exitAnim = Tween<double>(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(parent: _exitController, curve: Curves.easeIn));
-
+      CurvedAnimation(parent: _exitController, curve: Curves.easeIn));
     _runSequence();
   }
 
@@ -54,13 +52,12 @@ class _SplashScreenState extends State<SplashScreen>
     if (mounted) _textController.forward();
     await Future.delayed(const Duration(milliseconds: 1200));
     if (mounted) await _exitController.forward();
-    if (!mounted) return;
     final session = Supabase.instance.client.auth.currentSession;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) =>
-            session != null ? const HomeScreen() : const LoginScreen(),
+          session != null ? const HomeScreen() : const LoginScreen(),
       ),
     );
   }
@@ -88,12 +85,10 @@ class _SplashScreenState extends State<SplashScreen>
                 child: ScaleTransition(
                   scale: _scaleAnim,
                   child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(8),
-                    child: Container(
-                    width: 140,
-                    height: 140,
+                    width: 148,
+                    height: 148,
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
@@ -103,8 +98,9 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ],
                     ),
+                    padding: const EdgeInsets.all(8),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
                         'assets/images/icon.png',
                         fit: BoxFit.cover,
@@ -120,18 +116,24 @@ class _SplashScreenState extends State<SplashScreen>
                   opacity: _textFadeAnim,
                   child: const Column(
                     children: [
-                      Text('CariWorks',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2)),
+                      Text(
+                        'CariWorks',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
                       SizedBox(height: 8),
-                      Text('Jobs & Gigs for the Caribbean',
-                          style: TextStyle(
-                              color: Color(0xFFBBDEFB),
-                              fontSize: 15,
-                              letterSpacing: 1)),
+                      Text(
+                        'Jobs & Gigs for the Caribbean',
+                        style: TextStyle(
+                          color: Color(0xFFBBDEFB),
+                          fontSize: 15,
+                          letterSpacing: 1,
+                        ),
+                      ),
                     ],
                   ),
                 ),
