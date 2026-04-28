@@ -14,7 +14,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
   late TabController _tabController;
   final _searchController = TextEditingController();
   String _query = '';
-  final String _selectedCategory = 'All';
+  String _selectedCategory = 'All';
   final String _selectedCountry = 'All';
   final List<String> _categories = ['All', 'IT', 'Construction', 'Healthcare', 'Education', 'Retail', 'Hospitality', 'Agriculture', 'Finance', 'Other']; // ignore: unused_field
   final List<String> _countries = ['All', 'Saint Vincent', 'Barbados', 'Trinidad', 'Jamaica', 'Grenada', 'Saint Lucia', 'Antigua', 'Dominica']; // ignore: unused_field
