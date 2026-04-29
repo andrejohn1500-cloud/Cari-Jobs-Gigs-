@@ -3,9 +3,10 @@ import 'listing_detail_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, this.initialTab, this.initialCategory});
+  const SearchScreen({super.key, this.initialTab, this.initialCategory, this.recentOnly = false});
   final String? initialTab;
   final String? initialCategory;
+  final bool recentOnly;
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
@@ -42,8 +43,12 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
   Future<void> _fetchAll() async {
     setState(() => _loading = true);
     try {
-      final jobs = await Supabase.instance.client
+      final cutoff = DateTime.now().subtract(const Duration(hours: 24)).toIso8601String();
+      var jobsQuery = Supabase.instance.client
           .from('listings').select().eq('type', 'Employer').order('created_at', ascending: false);
+      final jobs = widget.recentOnly
+          ? await jobsQuery.gte('created_at', cutoff)
+          : await jobsQuery;
       final gigs = await Supabase.instance.client
           .from('listings').select().eq('type', 'Worker / Freelancer').order('created_at', ascending: false);
       if (mounted) {

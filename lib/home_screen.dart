@@ -200,7 +200,9 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
     );
   }
 
-  Widget _buildUrgentBanner() => Container(
+  Widget _buildUrgentBanner() => GestureDetector(
+    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(initialTab: 'jobs', recentOnly: true))),
+    child: Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF5B8DB8), Color(0xFF4A7BA7)]), borderRadius: BorderRadius.circular(16)),
     child: Row(children: [
@@ -208,11 +210,11 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
       const SizedBox(width: 12),
       const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Urgently Hiring!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-        Text('New jobs posted in SVG today', style: TextStyle(color: Colors.white70, fontSize: 13)),
+        Text('Jobs posted in the last 24 hours', style: TextStyle(color: Colors.white70, fontSize: 13)),
       ])),
       const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white70, size: 16),
     ]),
-  );
+  ));
 
   Widget _buildJobCard(Map<String, dynamic> j) => GestureDetector(
     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: j))),
