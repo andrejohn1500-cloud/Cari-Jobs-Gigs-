@@ -44,11 +44,14 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
     setState(() => _loading = true);
     try {
       final cutoff = DateTime.now().subtract(const Duration(hours: 24)).toIso8601String();
-      var jobsQuery = Supabase.instance.client
-          .from('listings').select().eq('type', 'Employer').order('created_at', ascending: false);
       final jobs = widget.recentOnly
-          ? await jobsQuery.gte('created_at', cutoff)
-          : await jobsQuery;
+          ? await Supabase.instance.client
+              .from('listings').select().eq('type', 'Employer')
+              .gte('created_at', cutoff)
+              .order('created_at', ascending: false)
+          : await Supabase.instance.client
+              .from('listings').select().eq('type', 'Employer')
+              .order('created_at', ascending: false);
       final gigs = await Supabase.instance.client
           .from('listings').select().eq('type', 'Worker / Freelancer').order('created_at', ascending: false);
       if (mounted) {
