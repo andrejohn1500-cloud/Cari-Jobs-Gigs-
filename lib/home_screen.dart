@@ -180,14 +180,9 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF1A3A5C), Color(0xFF5B8DB8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
+              Image.asset(
+                'assets/images/hero_caribbean.png',
+                fit: BoxFit.cover,
               ),
           Container(
             decoration: BoxDecoration(
