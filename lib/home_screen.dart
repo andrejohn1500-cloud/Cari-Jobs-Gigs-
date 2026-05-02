@@ -180,17 +180,15 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.network(
-            'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/assets/file_00000000f9bc71f883c2c30a2dcb768c.png',
-            fit: BoxFit.cover,
-            loadingBuilder: (_, child, progress) => progress == null ? child
-                : Container(color: const Color(0xFF2C5F8A)),
-            errorBuilder: (_, __, ___) => Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [Color(0xFF1A3A5C), Color(0xFF5B8DB8)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF1A3A5C), Color(0xFF5B8DB8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
               ),
-            ),
-          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
