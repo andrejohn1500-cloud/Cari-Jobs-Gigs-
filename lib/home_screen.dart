@@ -73,13 +73,13 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
           .eq('type', 'Job')
           .order('created_at', ascending: false)
           .limit(5);
-      final gigs = await Supabase.instance.client
-          .from('listings')
-          .select()
-          .eq('type', 'Worker / Freelancer')
-          .order('created_at', ascending: false)
-          .limit(5);
-      if (mounted) setState(() { _jobs = List<Map<String, dynamic>>.from(jobs); _gigs = List<Map<String, dynamic>>.from(gigs); _loading = false; });
+        final gigs = await Supabase.instance.client
+            .from('listings')
+            .select()
+            .eq('type', 'Worker / Freelancer')
+            .eq('featured', true)
+            .order('created_at', ascending: false)
+            .limit(10);
     } catch (e) {
       if (mounted) setState(() => _loading = false);
     }
