@@ -275,35 +275,34 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
             ],
           ),
         ),
-        SizedBox(
-          height: 94,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, mainAxisSpacing: 8, crossAxisSpacing: 8, childAspectRatio: 0.85,
+            ),
             itemCount: cats.length,
             itemBuilder: (_, i) {
               final (label, icon, color) = cats[i];
               return GestureDetector(
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(initialCategory: label))),
-                child: Container(
-                  width: 74,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 58, height: 58,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: color.withValues(alpha: 0.3)),
-                          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 8)],
-                        ),
-                        child: Icon(icon, color: color, size: 26),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 58, height: 58,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: color.withValues(alpha: 0.3)),
+                        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 8)],
                       ),
-                      const SizedBox(height: 6),
-                      Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF4A5568)), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ],
-                  ),
+                      child: Icon(icon, color: color, size: 26),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF4A5568)), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  ],
                 ),
               );
             },

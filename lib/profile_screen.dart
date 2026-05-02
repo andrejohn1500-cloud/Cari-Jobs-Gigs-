@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final nameCtrl = TextEditingController(text: _profile?['full_name'] ?? '');
     final bioCtrl = TextEditingController(text: _profile?['bio'] ?? '');
     String? country = _profile?['country'] ?? _profile?['location'];
-    final countries = ['Antigua and Barbuda','Bahamas','Barbados','Belize','Dominica','Grenada','Guyana','Haiti','Jamaica','Montserrat','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Suriname','Trinidad and Tobago','Other Caribbean','Other'];
+    final countries = ['Anguilla','Antigua and Barbuda','Aruba','Bahamas','Barbados','Belize','Bonaire','British Virgin Islands','Cayman Islands','Colombia','Costa Rica','Cuba','Curacao','Dominica','Dominican Republic','Grenada','Guadeloupe','Guatemala','Guyana','Haiti','Honduras','Jamaica','Martinique','Mexico','Montserrat','Nicaragua','Panama','Puerto Rico','Saba','Saint Barthelemy','Saint Kitts and Nevis','Saint Lucia','Saint Martin','Saint Vincent and the Grenadines','Sint Eustatius','Sint Maarten','Suriname','Trinidad and Tobago','Turks and Caicos','US Virgin Islands','Venezuela','Other'];
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
