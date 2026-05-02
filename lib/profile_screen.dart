@@ -27,6 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _fetchProfile();
+    _fetchCounts();
   }
 
   Future<void> _fetchProfile() async {
@@ -60,6 +61,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
+
+
+  Future<void> _fetchCounts() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) return;
+      final uid = user.id;
+      final a = await Supabase.instance.client
+          .from('applications').select('listing_id').eq('user_id', uid);
+      final s = await Supabase.instance.client
+          .from('saved_jobs').select('listing_id').eq('user_id', uid);
+      final p = await Supabase.instance.client
+          .from('listings').select('id').eq('user_id', uid);
+      if (mounted) setState(() {
+        _appCount = (a as List).length;
+        _savedCount = (s as List).length;
+        _postedCount = (p as List).length;
+      });
+    } catch (e) {
+      debugPrint('fetchCounts error: \$e');
+    }
+  }
 
   Future<void> _showEditProfile() async {
     final nameCtrl = TextEditingController(text: _profile?['full_name'] ?? '');
