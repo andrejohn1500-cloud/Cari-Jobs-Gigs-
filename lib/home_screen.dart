@@ -1,5 +1,6 @@
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
+import 'notifications_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'messages_screen.dart';
 import 'post_screen.dart';
@@ -132,7 +133,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
             ],
           ),
         ),
-        IconButton(icon: const Icon(Icons.notifications_outlined, color: Color(0xFF5B8DB8)), onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Notifications coming soon!"), backgroundColor: Color(0xFF5B8DB8)))),
+        IconButton(icon: const Icon(Icons.notifications_outlined, color: Color(0xFF5B8DB8)), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()))),
       ],
     ),
   );
@@ -176,7 +177,7 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
         fit: StackFit.expand,
         children: [
           Image.network(
-            'https://images.unsplash.com/photo-1580200764528-e6b13e39bbd7?w=900&q=80',
+            'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/assets/file_00000000f9bc71f883c2c30a2dcb768c.png',
             fit: BoxFit.cover,
             loadingBuilder: (_, child, progress) => progress == null ? child
                 : Container(color: const Color(0xFF2C5F8A)),

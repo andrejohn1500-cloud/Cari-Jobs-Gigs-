@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'notifications_screen.dart';
 import 'listing_detail_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'my_listings_screen.dart';
@@ -273,7 +274,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 24),
                         const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54)),
                         const SizedBox(height: 12),
-                        _menuItem(Icons.notifications_outlined, 'Notifications', context, onTap: null),
+                        _menuItem(Icons.notifications_outlined, 'Notifications', context, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()))),
                         _menuItem(Icons.lock_outline, 'Privacy Policy', context, onTap: () async {
                       final uri = Uri.parse('https://cariworks.co/privacy.html');
                       await launchUrl(uri, mode: LaunchMode.externalApplication);
