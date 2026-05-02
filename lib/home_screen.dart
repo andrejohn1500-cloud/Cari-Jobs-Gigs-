@@ -270,10 +270,6 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
           child: Row(
             children: [
               const Expanded(child: Text('Browse Categories', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C)))),
-              GestureDetector(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
-                child: const Text('See all', style: TextStyle(color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600, fontSize: 14)),
-              ),
             ],
           ),
         ),
