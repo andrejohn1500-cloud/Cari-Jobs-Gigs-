@@ -24,7 +24,9 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
           .from('listings')
           .select()
           .eq('user_id', user.id)
-          .order('created_at', ascending: false);
+          .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false);
       if (mounted) setState(() { _listings = data; _loading = false; });
     } catch (e) {
       if (mounted) setState(() => _loading = false);

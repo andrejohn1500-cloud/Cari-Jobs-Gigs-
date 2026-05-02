@@ -48,18 +48,26 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
           ? await Supabase.instance.client
               .from('listings').select().eq('type', 'Employer')
               .gte('created_at', cutoff)
-              .order('created_at', ascending: false)
+              .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false)
           : await Supabase.instance.client
               .from('listings').select().eq('type', 'Employer')
-              .order('created_at', ascending: false);
+              .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false);
       final gigs = widget.recentOnly
         ? await Supabase.instance.client
             .from('listings').select().eq('type', 'Worker / Freelancer')
             .gte('created_at', cutoff)
-            .order('created_at', ascending: false)
+            .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false)
         : await Supabase.instance.client
             .from('listings').select().eq('type', 'Worker / Freelancer')
-            .order('created_at', ascending: false);
+            .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false);
       if (mounted) {
         setState(() {
         _jobs = List<Map<String, dynamic>>.from(jobs);
@@ -175,6 +183,23 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(j['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
+              if (j['featured'] == true)
+                Container(
+                  margin: const EdgeInsets.only(top: 4, bottom: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFB800),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, size: 11, color: Colors.white),
+                      SizedBox(width: 3),
+                      Text('Featured', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
       const SizedBox(height: 4),
       Text(j['company'] ?? '', style: const TextStyle(fontSize: 13, color: Color(0xFF636E72))),
       const SizedBox(height: 8),
@@ -198,6 +223,23 @@ class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderSt
     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFEFEFE8)), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(g['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
+              if (g['featured'] == true)
+                Container(
+                  margin: const EdgeInsets.only(top: 4, bottom: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFB800),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, size: 11, color: Colors.white),
+                      SizedBox(width: 3),
+                      Text('Featured', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
       const SizedBox(height: 4),
       Text(g['company'] ?? '', style: const TextStyle(fontSize: 13, color: Color(0xFF636E72))),
       const SizedBox(height: 8),

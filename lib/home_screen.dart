@@ -72,14 +72,18 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
           .from('listings')
           .select()
           .eq('type', 'Job')
-          .order('created_at', ascending: false)
+          .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false)
           .limit(5);
         final gigs = await Supabase.instance.client
             .from('listings')
             .select()
             .eq('type', 'Worker / Freelancer')
             .eq('featured', true)
-            .order('created_at', ascending: false)
+            .order('featured', ascending: false)
+        .order('is_premium', ascending: false)
+        .order('created_at', ascending: false)
             .limit(10);
       if (mounted) setState(() { _jobs = List<Map<String, dynamic>>.from(jobs); _gigs = List<Map<String, dynamic>>.from(gigs); _loading = false; });
     } catch (e) {
