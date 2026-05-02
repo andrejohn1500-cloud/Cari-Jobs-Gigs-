@@ -19,9 +19,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _appCount = 0;
   int _savedCount = 0;
   int _postedCount = 0;
-  int _appCount = 0;
-  int _savedCount = 0;
-  int _postedCount = 0;
   final _picker = ImagePicker();
 
   @override
@@ -330,17 +327,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _goToMyListings() => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyListingsScreen()));
 
-
-  void _goToApplications() => Navigator.push(context, MaterialPageRoute(
-    builder: (_) => _SavedListingsPage(title: 'My Applications', table: 'applications', emptyMsg: 'No applications yet.\nStart applying to jobs!'),
-  ));
-
-  void _goToSaved() => Navigator.push(context, MaterialPageRoute(
-    builder: (_) => _SavedListingsPage(title: 'Saved Jobs & Services', table: 'saved_jobs', emptyMsg: 'No saved listings yet.\nBookmark jobs you like!'),
-  ));
-
-  void _goToMyListings() => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyListingsScreen()));
-
   Widget _statBox(String label, String val, {VoidCallback? onTap}) => GestureDetector(
     onTap: onTap,
     child: Container(
@@ -363,86 +349,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: onTap,
     ),
   );
-}
-
-
-class _SavedListingsPage extends StatefulWidget {
-  final String title;
-  final String table;
-  final String emptyMsg;
-  const _SavedListingsPage({required this.title, required this.table, required this.emptyMsg});
-  @override
-  State<_SavedListingsPage> createState() => _SavedListingsPageState();
-}
-
-class _SavedListingsPageState extends State<_SavedListingsPage> {
-  List<Map<String, dynamic>> _listings = [];
-  bool _loading = true;
-
-  @override
-  void initState() { super.initState(); _fetch(); }
-
-  Future<void> _fetch() async {
-    try {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) { if (mounted) setState(() => _loading = false); return; }
-      final rows = await Supabase.instance.client.from(widget.table).select('listing_id').eq('user_id', user.id);
-      final ids = (rows as List).map((r) => r['listing_id']).where((id) => id != null).toList();
-      if (ids.isEmpty) { if (mounted) setState(() => _loading = false); return; }
-      final data = await Supabase.instance.client.from('listings').select().inFilter('id', ids).order('created_at', ascending: false);
-      if (mounted) setState(() { _listings = List<Map<String, dynamic>>.from(data); _loading = false; });
-    } catch (e) {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
-      appBar: AppBar(
-        title: Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF1A2B3C))),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1A2B3C),
-        elevation: 0,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF5B8DB8)))
-          : _listings.isEmpty
-              ? Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(Icons.inbox_outlined, size: 56, color: Color(0xFFCDD5DE)),
-                  const SizedBox(height: 16),
-                  Text(widget.emptyMsg, style: const TextStyle(color: Color(0xFF9AACBA), fontSize: 14), textAlign: TextAlign.center),
-                ]))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _listings.length,
-                  itemBuilder: (_, i) {
-                    final item = _listings[i];
-                    return GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: item))),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
-                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10)]),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(item['title'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1A2B3C))),
-                          const SizedBox(height: 4),
-                          Text(item['company'] ?? '', style: const TextStyle(color: Color(0xFF707D89), fontSize: 13)),
-                          const SizedBox(height: 8),
-                          Row(children: [
-                            const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFF5B8DB8)),
-                            const SizedBox(width: 4),
-                            Text((item['location'] ?? 'SVG').toString(), style: const TextStyle(color: Color(0xFF8EA0AE), fontSize: 12)),
-                          ]),
-                        ]),
-                      ),
-                    );
-                  },
-                ),
-    );
-  }
 }
 
 
