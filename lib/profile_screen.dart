@@ -250,18 +250,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-            if ((_profile?['bio'] ?? '').toString().trim().isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  _profile?['bio'] ?? '',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                (_profile?['bio'] ?? '').toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
             const SizedBox(height: 24),
                 if (_profile?['account_type'] == 'jobseeker' && !_isPremium)
                   Padding(
