@@ -251,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-            if (_profile?['bio'] != null && (_profile?['bio'] as String).isNotEmpty)
+            if (_profile?['bio'] != null && (_profile?['bio'].toString().trim()).isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
