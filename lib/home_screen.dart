@@ -86,189 +86,363 @@ class _HomeFeedTabState extends State<HomeFeedTab> {
     }
   }
 
+  int _activeTab = 0;
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: _fetchListings,
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: Colors.white,
-              floating: true,
-              snap: true,
-              elevation: 0,
-              title: Row(children: [
-                Container(width: 36, height: 36, decoration: BoxDecoration(color: const Color(0xFF5B8DB8), borderRadius: BorderRadius.circular(10)), child: const Center(child: Text('CW', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)))),
-                const SizedBox(width: 10),
-                const Text('CariWorks', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
-              ]),
-              actions: [IconButton(icon: const Icon(Icons.notifications_outlined, color: Color(0xFF2D3436)), onPressed: () {}), const SizedBox(width: 4)],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSearchBar(),
-                    const SizedBox(height: 24),
-                    _buildSectionHeader('Browse Categories', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()))),
-                    const SizedBox(height: 14),
-                    _buildCategories(),
-                    const SizedBox(height: 24),
-                    _buildUrgentBanner(),
-                    const SizedBox(height: 24),
-                    _buildSectionHeader('Latest Jobs', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'jobs')))),
-                    const SizedBox(height: 14),
-                    if (_loading) const Center(child: CircularProgressIndicator())
-                    else if (_jobs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No jobs posted yet. Be the first!', style: TextStyle(color: Colors.grey))))
-                    else ..._jobs.map((j) => Padding(padding: const EdgeInsets.only(bottom: 12), child: _buildJobCard(j))),
-                    const SizedBox(height: 24),
-                    _buildSectionHeader('Featured Services', onSeeAll: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'gigs')))),
-                    const SizedBox(height: 14),
-                    if (_loading) const SizedBox()
-                    else if (_gigs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(16), child: Text('No services posted yet.', style: TextStyle(color: Colors.grey))))
-                    else ..._gigs.map((g) => Padding(padding: const EdgeInsets.only(bottom: 12), child: _buildGigCard(g))),
-                    const SizedBox(height: 32),
-                  ],
-                ),
-              ),
-            ),
-          ],
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0F4F8),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _fetchListings,
+          color: const Color(0xFF5B8DB8),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHeader()),
+              SliverToBoxAdapter(child: _buildSearchBar()),
+              SliverToBoxAdapter(child: _buildUrgentBanner()),
+              SliverToBoxAdapter(child: _buildCategories()),
+              SliverToBoxAdapter(child: _buildOpportunities()),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSearchBar() => Container(
-    height: 52,
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
-    child: const Row(children: [SizedBox(width: 16), Icon(Icons.search_rounded, color: Color(0xFF5B8DB8), size: 22), SizedBox(width: 10), Text('Search jobs, gigs, companies...', style: TextStyle(color: Color(0xFFB2BEC3), fontSize: 15))]),
+  Widget _buildHeader() => Padding(
+    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+    child: Row(
+      children: [
+        Container(
+          width: 44, height: 44,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [Color(0xFF5B8DB8), Color(0xFF3A6B96)]),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Center(child: Text('CW', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('CariWorks', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C))),
+              Text('Caribbean Jobs & Services', style: TextStyle(fontSize: 12, color: Color(0xFF6B7C8D))),
+            ],
+          ),
+        ),
+        IconButton(icon: const Icon(Icons.notifications_outlined, color: Color(0xFF5B8DB8)), onPressed: () {}),
+      ],
+    ),
   );
 
+  Widget _buildSearchBar() => GestureDetector(
+    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 2))],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: Color(0xFF5B8DB8), size: 22),
+          const SizedBox(width: 12),
+          const Expanded(child: Text('Search jobs, gigs, companies...', style: TextStyle(color: Color(0xFFADB8C3), fontSize: 15))),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(color: Color(0x195B8DB8), borderRadius: BorderRadius.circular(8)),
+            child: const Text('SVG', style: TextStyle(color: Color(0xFF5B8DB8), fontSize: 12, fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    ),
+  );
 
-
-
-  Widget _buildSectionHeader(String title, {VoidCallback? onSeeAll}) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
-      GestureDetector(onTap: onSeeAll, child: Text('See all', style: const TextStyle(fontSize: 14, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
-    ],
+  Widget _buildUrgentBanner() => GestureDetector(
+    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'jobs', recentOnly: true))),
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(colors: [Color(0xFF2C5F8A), Color(0xFF5B8DB8)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [BoxShadow(color: Color(0x665B8DB8), blurRadius: 16, offset: const Offset(0, 6))],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 46, height: 46,
+            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
+            child: const Icon(Icons.bolt_rounded, color: Colors.white, size: 28),
+          ),
+          const SizedBox(width: 14),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Urgently Hiring!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17)),
+                SizedBox(height: 2),
+                Text('Jobs & services posted in last 24 hours', style: TextStyle(color: Colors.white70, fontSize: 12)),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
+          ),
+        ],
+      ),
+    ),
   );
 
   Widget _buildCategories() {
-    final cats = [
-      {'image': 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=120&q=80', 'label': 'Trades'},
-      {'image': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=120&q=80', 'label': 'Tech'},
-      {'image': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=120&q=80', 'label': 'Creative'},
-      {'image': 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=120&q=80', 'label': 'Education'},
-      {'image': 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=120&q=80', 'label': 'Marketing'},
-      {'image': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&q=80', 'label': 'Food'},
+    final cats = <(String, IconData, Color)>[
+      ('Trades', Icons.construction_rounded, const Color(0xFFE8833A)),
+      ('Tech', Icons.computer_rounded, const Color(0xFF5B8DB8)),
+      ('Creative', Icons.palette_rounded, const Color(0xFFB85C9E)),
+      ('Education', Icons.school_rounded, const Color(0xFF4CAF7D)),
+      ('Marketing', Icons.campaign_rounded, const Color(0xFFE0B840)),
+      ('Finance', Icons.account_balance_rounded, const Color(0xFF6B7FDB)),
+      ('Health', Icons.favorite_rounded, const Color(0xFFE85B5B)),
+      ('Hospitality', Icons.restaurant_rounded, const Color(0xFF42A5A0)),
     ];
-    return SizedBox(
-      height: 90,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: cats.length,
-        itemBuilder: (context, i) {
-          final cat = cats[i];
-          return GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(initialTab: 'jobs', initialCategory: cat['label'] as String))),
-            child: Container(
-            margin: const EdgeInsets.only(right: 12),
-            child: Column(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  cat['image'] as String,
-                  width: 56, height: 56, fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => Container(
-                    width: 56, height: 56,
-                    decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(16)),
-                    child: const Icon(Icons.image, color: Color(0xFF5B8DB8), size: 26),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+          child: Row(
+            children: [
+              const Expanded(child: Text('Browse Categories', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C)))),
+              GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
+                child: const Text('See all', style: TextStyle(color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600, fontSize: 14)),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 94,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: cats.length,
+            itemBuilder: (_, i) {
+              final (label, icon, color) = cats[i];
+              return GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(initialCategory: label))),
+                child: Container(
+                  width: 74,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 58, height: 58,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: color.withValues(alpha: 0.3)),
+                          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.12), blurRadius: 8)],
+                        ),
+                        child: Icon(icon, color: color, size: 26),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF4A5568)), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(cat['label'] as String, style: const TextStyle(fontSize: 12, color: Color(0xFF636E72), fontWeight: FontWeight.w500)),
-            ]),
+              );
+            },
           ),
-          );
-        },
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildUrgentBanner() => GestureDetector(
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen(initialTab: 'jobs', recentOnly: true))),
-    child: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF5B8DB8), Color(0xFF4A7BA7)]), borderRadius: BorderRadius.circular(16)),
-    child: Row(children: [
-      const Icon(Symbols.bolt, color: Colors.white, size: 28),
-      const SizedBox(width: 12),
-      const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Urgently Hiring!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-        Text('Jobs posted in the last 24 hours', style: TextStyle(color: Colors.white70, fontSize: 13)),
-      ])),
-      const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white70, size: 16),
-    ]),
-  ));
+  Widget _buildOpportunities() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Padding(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 12),
+        child: Text('Latest Opportunities', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C))),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+          child: Row(
+            children: [
+              Expanded(child: _tabChip('Jobs', 0)),
+              Expanded(child: _tabChip('Services', 1)),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(height: 12),
+      if (_loading)
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 48),
+          child: Center(child: CircularProgressIndicator(color: Color(0xFF5B8DB8))),
+        )
+      else if (_activeTab == 0) ...[
+        if (_jobs.isEmpty)
+          _buildEmptyState('No jobs posted yet.\nBe the first to post!', Icons.work_outline_rounded)
+        else
+          ..._jobs.take(5).map((j) => _buildJobCard(j)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+          child: OutlinedButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'jobs'))),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 48),
+              side: const BorderSide(color: Color(0xFF5B8DB8)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('See All Jobs', style: TextStyle(color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600)),
+          ),
+        ),
+      ] else ...[
+        if (_gigs.isEmpty)
+          _buildEmptyState('No services posted yet.\nBe the first!', Icons.construction_outlined)
+        else
+          ..._gigs.take(5).map((g) => _buildGigCard(g)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+          child: OutlinedButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen(initialTab: 'gigs'))),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 48),
+              side: const BorderSide(color: Color(0xFF5B8DB8)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('See All Services', style: TextStyle(color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600)),
+          ),
+        ),
+      ],
+    ],
+  );
+
+  Widget _tabChip(String label, int index) => GestureDetector(
+    onTap: () => setState(() => _activeTab = index),
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      decoration: BoxDecoration(
+        color: _activeTab == index ? const Color(0xFF5B8DB8) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Text(label, style: TextStyle(color: _activeTab == index ? Colors.white : const Color(0xFF8395A7), fontWeight: FontWeight.w600, fontSize: 14)),
+      ),
+    ),
+  );
+
+  Widget _buildEmptyState(String message, IconData icon) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+    child: Center(
+      child: Column(
+        children: [
+          Container(
+            width: 64, height: 64,
+            decoration: BoxDecoration(color: const Color(0xFFEEF2F7), borderRadius: BorderRadius.circular(20)),
+            child: Icon(icon, size: 32, color: const Color(0xFFB0BEC5)),
+          ),
+          const SizedBox(height: 14),
+          Text(message, style: const TextStyle(color: Color(0xFF9AACBA), fontSize: 14, height: 1.5), textAlign: TextAlign.center),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildJobCard(Map<String, dynamic> j) => GestureDetector(
     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: j))),
     child: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
-    child: Row(children: [
-      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Icons.business_center_rounded, color: Color(0xFF5B8DB8), size: 26)),
-      const SizedBox(width: 14),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-              if (j['featured'] == true) Container(
-                margin: const EdgeInsets.only(right: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(color: const Color(0xFFFFD700), borderRadius: BorderRadius.circular(4)),
-                child: const Text('Featured', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black)),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 2))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(j['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C)), maxLines: 1, overflow: TextOverflow.ellipsis)),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(color: Color(0x195B8DB8), borderRadius: BorderRadius.circular(8)),
+                child: const Text('Job', style: TextStyle(color: Color(0xFF5B8DB8), fontSize: 11, fontWeight: FontWeight.w600)),
               ),
-              Expanded(child: Text(j['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436)))),
-            ]),
-        const SizedBox(height: 3),
-        Text(j['company'] ?? '', style: const TextStyle(fontSize: 13, color: Color(0xFF636E72))),
-        const SizedBox(height: 6),
-        Row(children: [const Icon(Icons.location_on_outlined, size: 13, color: Color(0xFFB2BEC3)), const SizedBox(width: 3), Text(j['location'] ?? '', style: const TextStyle(fontSize: 12, color: Color(0xFFB2BEC3)))]),
-      ])),
-      Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFF5B8DB8).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)), child: Text(j['job_type'] ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF5B8DB8), fontWeight: FontWeight.w600))),
-        const SizedBox(height: 8),
-        Text(j['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
-      ]),
-    ]),
-  ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(j['company'] ?? '', style: const TextStyle(color: Color(0xFF707D89), fontSize: 13)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF5B8DB8)),
+              const SizedBox(width: 4),
+              Expanded(child: Text((j['location'] ?? 'SVG').toString(), style: const TextStyle(color: Color(0xFF8EA0AE), fontSize: 12), overflow: TextOverflow.ellipsis)),
+              if ((j['salary'] ?? '').toString().isNotEmpty)
+                Text(j['salary'].toString(), style: const TextStyle(color: Color(0xFF2C5F8A), fontWeight: FontWeight.bold, fontSize: 13)),
+            ],
+          ),
+        ],
+      ),
+    ),
   );
 
   Widget _buildGigCard(Map<String, dynamic> g) => GestureDetector(
     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailScreen(listing: g))),
     child: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8E4DE), width: 1.5), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]),
-    child: Row(children: [
-      Container(width: 52, height: 52, decoration: BoxDecoration(color: const Color(0xFFD4A843).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)), child: const Icon(Symbols.brush, color: Color(0xFFD4A843), size: 26)),
-      const SizedBox(width: 14),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(g['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF2D3436))),
-        const SizedBox(height: 3),
-        Text(g['company'] ?? '', style: const TextStyle(fontSize: 13, color: Color(0xFF636E72))),
-        const SizedBox(height: 6),
-        Row(children: [const Icon(Icons.star_rounded, size: 14, color: Color(0xFFD4A843)), const SizedBox(width: 3), Text(g['job_type'] ?? '', style: const TextStyle(fontSize: 12, color: Color(0xFF2D3436), fontWeight: FontWeight.w600))]),
-      ])),
-      Text(g['salary'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFD4A843))),
-    ]),
-  ),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: g['featured'] == true ? Border.all(color: Color(0x445B8DB8)) : null,
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 2))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(g['title'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1A2B3C)), maxLines: 1, overflow: TextOverflow.ellipsis)),
+              if (g['featured'] == true)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(color: const Color(0xFF5B8DB8), borderRadius: BorderRadius.circular(8)),
+                  child: const Text('Featured', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(g['company'] ?? '', style: const TextStyle(color: Color(0xFF707D89), fontSize: 13)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF5B8DB8)),
+              const SizedBox(width: 4),
+              Expanded(child: Text((g['location'] ?? 'SVG').toString(), style: const TextStyle(color: Color(0xFF8EA0AE), fontSize: 12), overflow: TextOverflow.ellipsis)),
+              if ((g['salary'] ?? '').toString().isNotEmpty)
+                Text(g['salary'].toString(), style: const TextStyle(color: Color(0xFF2C5F8A), fontWeight: FontWeight.bold, fontSize: 13)),
+            ],
+          ),
+        ],
+      ),
+    ),
   );
 }
+
 
 class SearchTab extends StatelessWidget {
   const SearchTab({super.key});
