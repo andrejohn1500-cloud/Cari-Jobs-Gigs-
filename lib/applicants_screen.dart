@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class ApplicantsScreen extends StatefulWidget {
+  final String listingId;
+  final String listingTitle;
+  const ApplicantsScreen({super.key, required this.listingId, required this.listingTitle});
+  @override
+  State<ApplicantsScreen> createState() => _ApplicantsScreenState();
+}
+
+class _ApplicantsScreenState extends State<ApplicantsScreen> {
+  final _supabase = Supabase.instance.client;
+  List<Map<String, dynamic>> _applicants = [];
+  bool _loading = true;
+
+  @override
+  void initState() { super.initState(); _fetchApplicants(); }
+
+  Future<void> _fetchApplicants() async {
+    try {
+      final data = await _supabase
+          .from('applications')
+          .select('id, created_at, applicant_id, profiles(full_name, email, phone, country, bio)')
+          .eq('listing_id', widget.listingId)
+          .order('created_at', ascending: false);
+      setState(() { _applicants = List<Map<String, dynamic>>.from(data); _loading = false; });
+    } catch (e) {
+      setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Applicants', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          Text(widget.listingTitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        ]),
+        backgroundColor: const Color(0xFF5B8DB8),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _applicants.isEmpty
+              ? const Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(Icons.people_outline, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text('No applicants yet', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                  SizedBox(height: 8),
+                  Text('Share your listing to attract applicants', style: TextStyle(color: Colors.grey)),
+                ]))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _applicants.length,
+                  itemBuilder: (ctx, i) {
+                    final a = _applicants[i];
+                    final profile = a['profiles'] as Map<String, dynamic>? ?? {};
+                    final name = profile['full_name'] ?? 'Unknown';
+                    final email = profile['email'] ?? '';
+                    final phone = profile['phone'] ?? '';
+                    final country = profile['country'] ?? '';
+                    final bio = profile['bio'] ?? '';
+                    final date = DateTime.tryParse(a['created_at'] ?? '');
+                    final dateStr = date != null ? '${date.day}/${date.month}/${date.year}' : '';
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(children: [
+                            CircleAvatar(backgroundColor: const Color(0xFF5B8DB8), child: Text(name.isNotEmpty ? name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                            const SizedBox(width: 12),
+                            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              if (country.isNotEmpty) Text(country, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                            ])),
+                            Text(dateStr, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                          ]),
+                          if (bio.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Text(bio, style: const TextStyle(fontSize: 14), maxLines: 3, overflow: TextOverflow.ellipsis),
+                          ],
+                          const SizedBox(height: 12),
+                          Row(children: [
+                            if (email.isNotEmpty) Expanded(child: OutlinedButton.icon(
+                              icon: const Icon(Icons.email, size: 16),
+                              label: const Text('Email'),
+                              onPressed: () async {
+                                final uri = Uri.parse('mailto:$email');
+                                // ignore: deprecated_member_use
+                                if (await canLaunchUrl(uri)) await launchUrl(uri);
+                              },
+                            )),
+                            if (email.isNotEmpty && phone.isNotEmpty) const SizedBox(width: 8),
+                            if (phone.isNotEmpty) Expanded(child: OutlinedButton.icon(
+                              icon: const Icon(Icons.phone, size: 16),
+                              label: const Text('Call'),
+                              onPressed: () async {
+                                final uri = Uri.parse('tel:$phone');
+                                // ignore: deprecated_member_use
+                                if (await canLaunchUrl(uri)) await launchUrl(uri);
+                              },
+                            )),
+                          ]),
+                        ]),
+                      ),
+                    );
+                  }),
+    );
+  }
+}
