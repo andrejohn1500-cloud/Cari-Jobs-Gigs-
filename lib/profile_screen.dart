@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _showEditProfile() async {
     final nameCtrl = TextEditingController(text: _profile?['full_name'] ?? '');
     final bioCtrl = TextEditingController(text: _profile?['bio'] ?? '');
-    String? country = _profile?['country'] ?? _profile?['location'];
+    String? country = _profile?['country'] ?? '';
     final countries = ['Anguilla','Antigua and Barbuda','Aruba','Bahamas','Barbados','Belize','Bonaire','British Virgin Islands','Cayman Islands','Colombia','Costa Rica','Cuba','Curacao','Dominica','Dominican Republic','Grenada','Guadeloupe','Guatemala','Guyana','Haiti','Honduras','Jamaica','Martinique','Mexico','Montserrat','Nicaragua','Panama','Puerto Rico','Saba','Saint Barthelemy','Saint Kitts and Nevis','Saint Lucia','Saint Martin','Saint Vincent and the Grenadines','Sint Eustatius','Sint Maarten','Suriname','Trinidad and Tobago','Turks and Caicos','US Virgin Islands','Venezuela','Other'];
     await showModalBottomSheet(
       context: context,
@@ -238,7 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 12),
                         Text(_displayName, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
-                        Text('$_accountTypeLabel · ${_profile?['location'] ?? 'Caribbean'}', style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                        Text('$_accountTypeLabel · ${_profile?['country'] ?? 'Caribbean'}', style: const TextStyle(color: Colors.white70, fontSize: 14)),
                         const SizedBox(height: 16),
                         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                           _statBox('Applications', _appCount.toString()),
@@ -250,7 +250,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
+            if (_profile?['bio'] != null && (_profile?['bio'] as String).isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  _profile?['bio'] ?? '',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            const SizedBox(height: 24),
                 if (_profile?['account_type'] == 'jobseeker' && !_isPremium)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
