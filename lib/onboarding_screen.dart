@@ -20,12 +20,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       'image': 'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000f32c71f7b60152098e305915.jpg',
       'title': 'Every Skill\nBelongs Here.',
-      'body': 'From tradespeople and creatives to teachers and business professionals — CariWorks celebrates every kind of Caribbean worker. Post your service and let the work come to you.',
+      'body': 'Trades, tech, creative or professional. Post your service and let the work come to you.',
     },
     {
       'image': 'https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000d09871f7947fe7156df8be3e.jpg',
       'title': 'Apply. Post.\nGrow.',
-      'body': 'Browse jobs, apply in seconds, and track your applications — all from your phone. Employers can post listings and find the right person fast. This is how the Caribbean works now.',
+      'body': 'Apply in seconds. Post a listing in minutes. Track it all from your phone. This is how the Caribbean works now.',
     },
   ];
 
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         flex: 6,
                         child: Image.network(
                           slide['image']!,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           width: double.infinity,
                           loadingBuilder: (ctx, child, progress) =>
                               progress == null ? child : const Center(child: CircularProgressIndicator(color: Colors.white)),
