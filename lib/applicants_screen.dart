@@ -25,7 +25,18 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
           .select('id, created_at, user_id, profiles(full_name, email, phone, country, bio)')
           .eq('listing_id', widget.listingId)
           .order('created_at', ascending: false);
-      setState(() { _applicants = List<Map<String, dynamic>>.from(data); _loading = false; });
+      final List<Map<String, dynamic>> enriched = [];
+    for (final a in data) {
+      final map = Map<String, dynamic>.from(a);
+      try {
+        final emailResult = await _supabase.rpc('get_user_email', params: {'user_id': a['user_id']});
+        final profile = Map<String, dynamic>.from(map['profiles'] ?? {});
+        profile['email'] = emailResult ?? '';
+        map['profiles'] = profile;
+      } catch (_) {}
+      enriched.add(map);
+    }
+    setState(() { _applicants = enriched; _loading = false; });
     } catch (e) {
       setState(() => _loading = false);
     }
