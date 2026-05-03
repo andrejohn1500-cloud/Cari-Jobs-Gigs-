@@ -22,7 +22,7 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
     try {
       final data = await _supabase
           .from('applications')
-          .select('id, created_at, applicant_id, profiles(full_name, email, phone, country, bio)')
+          .select('id, created_at, user_id, profiles(full_name, email, phone, country, bio)')
           .eq('listing_id', widget.listingId)
           .order('created_at', ascending: false);
       setState(() { _applicants = List<Map<String, dynamic>>.from(data); _loading = false; });
