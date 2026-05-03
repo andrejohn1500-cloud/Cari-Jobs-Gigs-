@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -53,13 +54,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       Expanded(
                         flex: 6,
-                        child: Image.network(
-                          slide['image']!,
+                        child: CachedNetworkImage(
+                          imageUrl: slide['image']!,
                           fit: BoxFit.contain,
                           width: double.infinity,
-                          loadingBuilder: (ctx, child, progress) =>
-                              progress == null ? child : const Center(child: CircularProgressIndicator(color: Colors.white)),
-                          errorBuilder: (_, __, ___) => Container(color: const Color(0xFF0F3460)),
+                          placeholder: (ctx, url) => const Center(child: CircularProgressIndicator(color: Colors.white)),
+                          errorWidget: (ctx, url, err) => Container(color: const Color(0xFF0F3460)),
                         ),
                       ),
                       Expanded(
