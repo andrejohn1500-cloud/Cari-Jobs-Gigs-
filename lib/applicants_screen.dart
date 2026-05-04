@@ -98,7 +98,17 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
                     final bio = profile['bio'] ?? '';
                     final date = DateTime.tryParse(a['created_at'] ?? '');
                     final dateStr = date != null ? '${date.day}/${date.month}/${date.year}' : '';
-                    return Card(
+                    return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ApplicantDetailScreen(
+                        application: a,
+                        listingTitle: widget.listingTitle,
+                      ),
+                    ),
+                  ).then((_) => _fetchApplicants()),
+                  child: Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       child: Padding(
@@ -167,7 +177,8 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
                           ]),
                         ]),
                       ),
-                    );
+                    ),
+                );
                   }),
     );
   }
