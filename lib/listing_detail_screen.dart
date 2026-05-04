@@ -52,7 +52,13 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
     try {
       await Supabase.instance.client.from('applications').insert({'user_id': user.id, 'listing_id': listingId});
       if (mounted) setState(() => _isApplied = true);
-    } catch (e) { /* already applied */ }
+    } catch (e) {
+      if (e.toString().contains('23505') || e.toString().contains('duplicate')) {
+        if (mounted) setState(() => _isApplied = true);
+      } else {
+        if (mounted) _showSnack('Error: $e', Colors.red);
+      }
+    }
   }
 
   void _showSnack(String msg, Color color) {
