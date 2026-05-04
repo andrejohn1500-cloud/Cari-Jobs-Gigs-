@@ -83,7 +83,8 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
                     Text("${j?["category"] ?? ""} • ${j?["location"] ?? ""}", style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
-                    );
+            ),
+          );
                   },
                 ),
     );
