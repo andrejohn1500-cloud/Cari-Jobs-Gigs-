@@ -103,15 +103,40 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(children: [
-                            CircleAvatar(backgroundColor: const Color(0xFF5B8DB8), child: Text(name.isNotEmpty ? name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                            const SizedBox(width: 12),
-                            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              if (country.isNotEmpty) Text(country, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                            ])),
-                            Text(dateStr, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                          ]),
+                            Builder(builder: (context) {
+                              final appStatus = (a['status'] ?? 'pending').toString();
+                              if (appStatus == 'accepted' || appStatus == 'rejected') {
+                                return Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: appStatus == 'accepted' ? Colors.green.withValues(alpha: 0.15) : Colors.red.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: appStatus == 'accepted' ? Colors.green : Colors.red, width: 1.5),
+                                  ),
+                                  child: Text(
+                                    appStatus == 'accepted' ? '✓ Accepted' : '✗ Rejected',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: appStatus == 'accepted' ? Colors.green : Colors.red, fontWeight: FontWeight.bold, fontSize: 14),
+                                  ),
+                                );
+                              }
+                              return Row(children: [
+                                Expanded(child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.check, size: 16, color: Colors.white),
+                                  label: const Text('Accept', style: TextStyle(color: Colors.white)),
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                  onPressed: () => _updateStatus(a['id'].toString(), 'accepted'),
+                                )),
+                                const SizedBox(width: 8),
+                                Expanded(child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.close, size: 16, color: Colors.white),
+                                  label: const Text('Reject', style: TextStyle(color: Colors.white)),
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                  onPressed: () => _updateStatus(a['id'].toString(), 'rejected'),
+                                )),
+                              ]);
+                            }),
                           if (bio.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Text(bio, style: const TextStyle(fontSize: 14), maxLines: 3, overflow: TextOverflow.ellipsis),
