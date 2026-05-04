@@ -60,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen>
       precacheImage(CachedNetworkImageProvider('https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_0000000020a471f793f01f5fb6403f07.jpg'), context),
       precacheImage(CachedNetworkImageProvider('https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000f32c71f7b60152098e305915.jpg'), context),
       precacheImage(CachedNetworkImageProvider('https://ajprjkpjjkppcphjvccv.supabase.co/storage/v1/object/public/onboarding/file_00000000d09871f7947fe7156df8be3e.jpg'), context),
-    ]).catchError((_) {});
+    ]).catchError((_) => <void>[]);
     final prefs = await SharedPreferences.getInstance();
     final onboardingDone = prefs.getBool('onboarding_done') ?? false;
     final session = Supabase.instance.client.auth.currentSession;
