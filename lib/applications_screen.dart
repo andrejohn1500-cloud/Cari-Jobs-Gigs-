@@ -68,14 +68,14 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(child: Text(j?["title"] ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15))),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _statusColor(status).withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: _statusColor(status), width: 1.5),
-                          ),
-                          child: Text(status.toUpperCase(), style: TextStyle(color: _statusColor(status), fontSize: 12, fontWeight: FontWeight.bold)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: _statusColor(status),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(status.toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                  ),
                         ),
                       ],
                     ),
