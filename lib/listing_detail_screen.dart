@@ -13,6 +13,7 @@ class ListingDetailScreen extends StatefulWidget {
 class _ListingDetailScreenState extends State<ListingDetailScreen> {
   bool _isSaved = false;
   bool _isApplied = false;
+  String _applicationStatus = '';
 
   @override
   void initState() {
@@ -26,11 +27,15 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
     final listingId = widget.listing['id'] ?? '';
     final res = await Supabase.instance.client
         .from('applications')
-        .select('id')
+        .select('id, status')
         .eq('user_id', user.id)
         .eq('listing_id', listingId)
         .limit(1);
-    if (mounted) setState(() => _isApplied = (res as List).isNotEmpty);
+      final list = res as List;
+      if (mounted) setState(() {
+        _isApplied = list.isNotEmpty;
+        _applicationStatus = list.isNotEmpty ? (list[0]['status'] ?? 'pending') : '';
+      });
   }
 
   Future<void> _saveJob() async {
@@ -125,7 +130,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _isApplied ? null : _handleApplyNow,
-                child: Text(_isApplied ? 'Applied ✓' : 'Apply Now',
+                child: Text(_isApplied ? (_applicationStatus == 'accepted' ? '✓ Accepted' : _applicationStatus == 'rejected' ? '✗ Rejected' : 'Applied ✓') : 'Apply Now',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             ),
