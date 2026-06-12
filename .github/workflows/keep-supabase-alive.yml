@@ -1,0 +1,48 @@
+# .github/workflows/keep-supabase-alive.yml
+#
+# Keeps both Supabase free-tier projects active so they don't
+# auto-pause after 7 days of inactivity.
+#
+# Required GitHub secrets (Settings → Secrets and variables → Actions):
+#   DRESQUIZ_ANON_KEY   - anon/public key from Dres Quiz project (ncfeudprexwdvwcnlhtx)
+#   CARIWORKS_ANON_KEY  - anon/public key from CariWorks project (ajprjkpjjkppcphjvccv)
+
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: '0 12 */3 * *'   # every 3 days at 12:00 UTC (8:00 AM in SVG)
+  workflow_dispatch:          # lets you trigger it manually from the Actions tab
+
+jobs:
+  ping-dres-quiz:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query Dres Quiz database (app_version table)
+        run: |
+          STATUS=$(curl -s -o response.json -w "%{http_code}" \
+            "https://ncfeudprexwdvwcnlhtx.supabase.co/rest/v1/app_version?select=*&limit=1" \
+            -H "apikey: ${{ secrets.DRESQUIZ_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.DRESQUIZ_ANON_KEY }}")
+          echo "Dres Quiz HTTP status: $STATUS"
+          cat response.json
+          if [ "$STATUS" -ge 500 ] || [ "$STATUS" -eq 401 ] || [ "$STATUS" -eq 404 ]; then
+            echo "::error::Dres Quiz ping failed with status $STATUS — check table name and anon key"
+            exit 1
+          fi
+
+  ping-cariworks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query CariWorks database (listings table)
+        run: |
+          STATUS=$(curl -s -o response.json -w "%{http_code}" \
+            "https://ajprjkpjjkppcphjvccv.supabase.co/rest/v1/listings?select=id&limit=1" \
+            -H "apikey: ${{ secrets.CARIWORKS_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.CARIWORKS_ANON_KEY }}")
+          echo "CariWorks HTTP status: $STATUS"
+          cat response.json
+          if [ "$STATUS" -ge 500 ] || [ "$STATUS" -eq 401 ] || [ "$STATUS" -eq 404 ]; then
+            echo "::error::CariWorks ping failed with status $STATUS — check table name and anon key"
+            exit 1
+          fi
